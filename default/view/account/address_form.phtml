@@ -1,0 +1,193 @@
+<?
+/**
+ * @var member_addresses_model $memberAddress
+ * @var array $cityList
+ * @var array $townList
+ * @var array $districtList
+ */
+?>
+<div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressesLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="addressesLabel"><?= ($memberAddress->address_id > 0 ? "Adres Düzenle" : "Yeni Adres Ekle") ?></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" id="addressform" action="/account/saveAddress" onsubmit="return false;" method="post">
+                    <div class="form-group">
+                        <label for="addressType" class="col-xs-4 control-label"></label>
+                        <div class="col-xs-6">
+                            <?= form::radio("address_type", member_addresses_model::$addressTypes, $memberAddress->address_type,
+                                array('onclick' => "changeAddressType(this.value)")) ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-xs-4 control-label">Alıcı Adı</label>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" name="owner_name" id="owner_name" maxlength="48" value="<?= $memberAddress->owner_name ?>"
+                                placeholder="Teslim Alacak Kişi"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="company_name" class="col-xs-4 control-label">Şirket Adı</label>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" name="company_name" id="company_name" maxlength="48" value="<?= $memberAddress->company_name ?>"
+                                placeholder="Fatura Üzerine Yazılacak Ünvan"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="city_id" class="col-xs-4 control-label">Şehir</label>
+                        <div class="col-xs-6">
+                            <?= form::select("city_id", $cityList, $memberAddress->city_id, array(
+                                'onchange' => "fetchLinkedFieldData('/ajax/towns/',this.value,'#town_id')",
+                                'class' => 'form-control',
+                            )) ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="town_id" class="col-xs-4 control-label">İlçe</label>
+                        <div class="col-xs-6">
+                            <?=
+                            form::select("town_id", $townList, $memberAddress->town_id, array(
+                                'id' => 'town_id',
+                                'onchange' => "fetchLinkedFieldData('/ajax/districts/',this.value,'#district_id')",
+                                'class' => 'form-control',
+                            )) ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="district_id" class="col-xs-4 control-label">Semt</label>
+                        <div class="col-xs-6">
+                            <?=
+                            form::select("district_id", $districtList, $memberAddress->district_id, array(
+                                'id' => "district_id",
+                                'class' => 'form-control',
+                            )) ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addressText" class="col-xs-4 control-label">Adres</label>
+                        <div class="col-xs-6">
+                            <textarea class="form-control" id="addressText" name="address_text" cols="30" rows="2"><?= $memberAddress->address_text ?></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="postcode" class="col-xs-4 control-label">Posta Kodu</label>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" name="postcode" id="postcode" maxlength="48" value="<?= $memberAddress->postcode ?>"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tel" class="col-xs-4 control-label">Telefon Numarası</label>
+                        <div class="col-xs-6">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <input type="tel" class="form-control" id="tel" placeholder="+90" disabled/>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input type="tel" class="form-control" id="phone_prefix" name="phone_prefix" maxlength="3"
+                                        value="<?= substr(str_replace('-', '', $memberAddress->telephone), 0, 3) ?>" placeholder="555"/>
+                                </div>
+                                <div class="col-xs-6">
+                                    <input type="tel" class="form-control" name="phone_number" maxlength="7"
+                                        value="<?= substr(str_replace('-', '', $memberAddress->telephone), 3, 7) ?>" placeholder="5555555"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group corporate">
+                        <label for="tax_department" class="col-xs-4 control-label">Vergi Dairesi</label>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" id="tax_department" name="tax_department" maxlength="64" value="<?= $memberAddress->tax_department ?>"/>
+                        </div>
+                    </div>
+                    <div class="form-group corporate">
+                        <label for="tax_no" class="col-xs-4 control-label">Vergi Numarası</label>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" id="tax_no" name="tax_no" maxlength="10" value="<?= $memberAddress->tax_no ?>"/>
+                        </div>
+                    </div>
+                    <div class="form-group personal">
+                        <label for="tc_kimlik" class="col-xs-4 control-label">TC Numaranız</label>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" id="tc_kimlik" name="tc_kimlik" maxlength="11" value="<?= $memberAddress->tc_kimlik ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="is_default" class="col-xs-4 control-label">Varsayılan Adres</label>
+                        <div class="col-xs-6">
+                            <? if ($memberAddress->is_default) { ?>
+                                <div class="checkbox">
+                                    <label> <input type="hidden" name="is_default" value="on"> Bu adres varsayılan adresiniz</label>
+                                </div>
+                            <? } else { ?>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" id="is_default" name="is_default"> Bu adres varsayılan olsun</label>
+                                </div>
+                            <? } ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-offset-4 col-xs-8">
+                            <? if ($memberAddress->address_id > 0) { ?>
+                                <button type="submit" class="btn btn-warning">Adresi Güncelle</button>
+                            <? } else { ?>
+                                <button type="submit" class="btn btn-warning">Adres Oluştur</button>
+                            <? } ?>
+                        </div>
+                    </div>
+                    <input type="hidden" name="address_id" value="<?= $memberAddress->has() ? $memberAddress->address_id : 0 ?>"/> <input type="hidden" name="form"
+                        value="member-address-form"/>
+                    <input type="hidden" name="redirect" value="<?= (isset($redirect) ? $redirect : '') ?>"/>
+                </form>
+                <script type="text/javascript">
+                    function changeAddressType(adtype) {
+                        if (adtype == "Personal") {
+                            $("#company_name").parent().parent().hide();
+                            $("#tax_department").parent().parent().hide();
+                            $("#tax_no").parent().parent().hide();
+                            $("#tc_kimlik").parent().parent().show();
+                        } else {
+                            $("#tc_kimlik").parent().parent().hide();
+                            $("#company_name").parent().parent().show();
+                            $("#tax_department").parent().parent().show();
+                            $("#tax_no").parent().parent().show();
+                        }
+                    }
+                    $(function () {
+                        changeAddressType($("input[name=address_type]:checked").val());
+                        $("#addressform").validate({
+                            rules: {
+                                owner_name: {required: true, minlength: 5, maxlength: 50},
+                                company_name: {required: true},
+                                address_text: {required: true},
+                                city_id: {required: true, min: 1},
+                                town_id: {required: true, min: 1},
+                                tax_department: {required: true},
+                                tax_no: {minlength: 10, digits: true, required: true},
+                                tc_kimlik: {minlength: 11, digits: true, required: true},
+                                phone_prefix: {minlength: 3, digits: true, required: true},
+                                phone_number: {minlength: 7, digits: true, required: true}
+                            }, messages: {
+                                owner_name: "Alıcı Adı 5 Karakterden Kısa Olamaz",
+                                city_id: "Lütfen Şehir Seçiniz",
+                                town_id: "Lütfen İlçe Seçiniz",
+                                tax_department: "Vergi Dairesi boş olamaz",
+                                tax_no: "Vergi Numarası 10 hane olmalıdır. Boşluk bırakmayınız",
+                                tc_kimlik: "TC Kimlik Numaranız 11 hane olmalıdır",
+                                address_text: "Adresinizi giriniz"
+                            },
+                            submitHandler: function () {
+                                var $form = $('#addressform');
+                                $.post($form.attr('action'), $form.serialize(), function () {
+                                    window.location.reload();
+                                });
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

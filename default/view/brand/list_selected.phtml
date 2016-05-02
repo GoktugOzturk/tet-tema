@@ -1,0 +1,26 @@
+<?
+/**
+ * @var string $selected
+ * @var array $brandWords
+ * @var array $brandsByWords
+ * @var ob_brand $brand
+ */
+?>
+<div class="brandWord">
+    <h1><?= $selected ?> ile başlayan markalar</h1>
+    <ul class="clearfix">
+        <? foreach ($brandWords as $brandWord) { ?>
+            <li><a href="/markalar/<?= $brandWord ?>" <?= ($brandWord == $selected) ? 'class="active"' : '' ?>><?= $brandWord ?></a></li>
+        <? } ?>
+    </ul>
+</div>
+<div class="harflereGoreMarkalar brandFullList mb">
+    <div class="brandNames">
+        <ul class="row">
+            <li class="col-xs-2"><a href="/markalar/" class="brandtitle active"><i class="glyphicon glyphicon-chevron-left"></i> Geri Dön</a></li>
+            <? foreach ($brandsByWords as $brand) { ?>
+                <li class="col-xs-2"><a class="brandTitle" href="<?= link::toBrand($brand) ?>"><?= $brand->brand_name ?></a></li>
+            <? } ?>
+        </ul>
+    </div>
+</div>

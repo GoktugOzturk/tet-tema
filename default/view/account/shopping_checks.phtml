@@ -1,0 +1,55 @@
+<?
+/**
+ * @var member_shopping_checks_model[] $shoppingChecks
+ */
+?>
+<? if (count($shoppingChecks)) { ?>
+    <table class="table table-striped addressInfo">
+        <thead>
+        <tr>
+            <th>İndirim</th>
+            <th>Başlangıç T.</th>
+            <th>Son Kullanım T.</th>
+            <th>Min. Sepet</th>
+            <th>Durumu</th>
+        </tr>
+        </thead>
+        <tbody>
+        <? foreach ($shoppingChecks as $shoppingCheck) { ?>
+            <? $checkDetail = $shoppingCheck->getCheck() ?>
+            <tr>
+                <td>
+                    <? if ($checkDetail->check_type == 'amount') { ?>
+                        <?= icms::format_money($checkDetail->check_amount) ?>
+                    <? } else {
+                        if ($checkDetail->check_type == 'percent') { ?>
+                            % <?= $checkDetail->check_amount ?>
+                        <? }
+                    } ?>
+                </td>
+                <td><?= icms::format_date($shoppingCheck->start_date) ?></td>
+                <td><?= icms::format_date($shoppingCheck->end_date) ?></td>
+                <td><?= icms::format_money($checkDetail->min_shopping_amount) ?></td>
+                <td>
+                    <? if ($shoppingCheck->check_status == "Used") { ?>
+                        <span class="label label-warning">Kullanıldı</span>
+                    <? } else {
+                        if ($shoppingCheck->check_status == "Expired" || $shoppingCheck->end_date < date("Y-m-d")) { ?>
+                            <span class="label label-default">Süresi Dolmuş</span>
+                        <? } else { ?>
+                            <span class="label label-success">Kullanılabilir</span>
+                        <? }
+                    } ?>
+                </td>
+            </tr>
+        <? } ?>
+        </tbody>
+    </table>
+    <div class="alert alert-info"><strong>Son Kullanma Tarihi</strong> geçen kullanılmamış Alışveriş Çekleri 30 gün sonra yukarıdaki listeden silinmektedir.</div>
+<? } else { ?>
+    <div class="alert alert-info">Hesabınıza tanımlı Alışveriş Çeki bulunmamaktadır.<br>Son Kullanma Tarihi geçen kullanılmamış Alışveriş Çekleri 30 gün sonra listeden
+        silinmektedir.
+    </div>
+<? } ?>
+
+

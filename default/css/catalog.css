@@ -1,0 +1,256 @@
+@charset "UTF-8";
+.catProList {
+    border: 1px solid #E1E1E1;
+    padding: 10px 20px 20px 20px;
+    border-radius: 5px;
+}
+
+.proNumber {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.catSort {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E1E1E1;
+}
+
+.shortMenu li {
+    list-style: none;
+    float: left;
+}
+
+.shortMenu li a {
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+.shortMenu li a.active {
+    color: #1095E9;
+}
+
+.catProList .productBlock {
+    height: 420px;
+}
+
+.catProList .productImage {
+    display: block;
+}
+
+.catProList .productImage img {
+    width: 214px;
+    height: 214px;
+    border: 1px solid #EEEEEE;
+}
+
+.catProList .passiveProduct img {
+    opacity: 0.4;
+    filter: alpha(opacity=40); /* For IE8 and earlier */
+}
+
+.catProList .productName {
+    display: block;
+    margin-top: 7px;
+    height: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.catProList .price {
+    font-size: 20px;
+    font-weight: 700;
+    display: block;
+    line-height: 12px;
+    padding-top: 3px;
+}
+
+.catProList .price .tl {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.catProList .oldPrice {
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: line-through;
+    color: #888888;
+    display: block;
+}
+
+.catProList .prices {
+    margin-bottom: 5px;
+    margin-top: 10px;
+    height: 40px;
+}
+
+.proIcon {
+    vertical-align: middle
+}
+
+.proIcon .icon {
+    height: 30px;
+    width: 30px;
+    display: inline-block;
+    background-image: url("../img/sprite.png");
+    margin-right: 5px;
+}
+
+.proIcon .badgeFreeShipping {
+    background-position: -148px -2px;
+}
+
+.proIcon .badgeFastShipping {
+    background-position: -186px -2px;
+}
+
+.proIcon .badgeDiscount {
+    background-position: -224px -2px;
+}
+
+.proIcon .badgeNew {
+    background-position: -263px -2px;
+}
+
+.catProList .discountRate {
+    background-color: #F27A79;
+    color: #FFFFFF;
+    font-size: 18px;
+    border-radius: 40px;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    padding-top: 6px;
+    position: absolute;
+    top: 155px;
+    right: 20px;
+}
+
+.catProList .discountRate span {
+    font-size: 10px;
+    display: block;
+    line-height: 5px;
+}
+
+/* Filtre Menüsü */
+.sideFilter {
+    border-radius: 5px;
+    border: 1px solid #E1E1E1;
+    padding: 15px;
+}
+
+.sideFilter li {
+    margin-bottom: 2px;
+    list-style: none;
+}
+
+.sideFilter li a:hover {
+    color: #1095E9;
+}
+
+.filterBlock {
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #CCCCCC;
+    margin-bottom: 10px;
+}
+
+.filterBlock:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+    margin-bottom: 0;
+}
+
+.filterBlock ul {
+    margin-bottom: 0;
+}
+
+.filterBlock .headTitle {
+    margin-bottom: 5px;
+    display: inline-block;
+    font-size: 16px;
+    color: #1095E9;
+    font-weight: 600;
+}
+
+.filterBlock .filterItem a {
+    padding-left: 17px;
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #444444;
+    line-height: 17px;
+    overflow: hidden;
+    max-width: 180px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filterBlock .scrollbar {
+    max-height: 235px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-bottom: none !important;
+}
+
+.selectedBlock {
+    background: #F9F9F9;
+    padding: 5px 5px;
+    font-size: 11px;
+    margin-bottom: 10px;
+    border: 1px solid #E1E1E1;
+}
+
+.selectedBlock .clearFilter {
+    float: right;
+}
+
+.categoryBlock .filterItem a:hover, .categoryBlock .filterItem .active:hover {
+    background: none;
+}
+
+.categoryBlock .filterItem .active {
+    background: none;
+    color: #333333;
+    font-weight: 700;
+}
+
+.categoryBlock .filterItem a {
+    background: none;
+    padding-left: 0;
+}
+
+.categoryBlock .grid0 {
+    margin-left: 0;
+}
+
+.categoryBlock .grid1 {
+    margin-left: 5px;
+}
+
+.categoryBlock .grid2 {
+    margin-left: 10px;
+}
+
+.categoryBlock .grid3 {
+    margin-left: 15px;
+}
+
+.categoryBlock .grid4 {
+    margin-left: 20px;
+}
+
+.categoryBlock .grid5 {
+    margin-left: 25px;
+}
+
+/* yıldız düzeltme */
+.catProList .ratingBox, .catProList .rating {
+    float: right;
+}
+
+.catProList .reviewCount {
+    float: right;
+    padding: 2px 4px;
+}

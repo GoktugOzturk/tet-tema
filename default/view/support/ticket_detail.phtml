@@ -1,0 +1,56 @@
+<?
+/**
+ * @var ticket_model $ticket
+ * @var ticket_message_model[] $ticketMessages
+ * @var ticket_attachment_model[][] $messageAttachments
+ * @var int $orderId
+ * @var int $orderCode
+ * @var array $button
+ */
+?>
+<div class="row mt mb">
+    <div class="col-xs-6">Durumu: <?= ticket_model::$ticketStatuses[$ticket->ticket_status] ?><br> Son Güncelleme: <?= icms::format_datetime($ticket->last_action_time) ?></div>
+    <? if (!is_null($button)) { ?>
+        <div class="col-xs-6 text-right"><a href="<?= $button['href'] ?>" class="btn btn-success"><?= $button['text'] ?></a></div>
+    <? } ?>
+</div>
+<? if (isset($ticketMessages) && count($ticketMessages)) { ?>
+    <div class="">
+        <? foreach ($ticketMessages as $messageId => $ticketMessage) { ?>
+            <div class="media well well-sm <?= $messageId % 2 ? 'well-light' : '' ?>">
+                <div class="media-body">
+                    <div class="row" style="border-bottom: 1px dashed #1095e9;padding-bottom: 5px; margin-bottom: 5px">
+                        <div class="col-xs-6"><?
+                            if ($ticketMessage->message_from == ticket_message_model::MESSAGE_FROM_MEMBER) {
+                                echo "Siz yazdınız:";
+                            } else {
+                                if ($ticketMessage->message_from == ticket_message_model::MESSAGE_FROM_SYSTEM) {
+                                    echo "Sistem Mesajı:";
+                                } else {
+                                    echo "Müşteri Temsilcisi Mesajı:";
+                                }
+                            } ?>
+                        </div>
+                        <div class="col-xs-6 text-right"><?= icms::format_datetime($ticketMessage->message_time) ?></div>
+                    </div>
+                    <?= $ticketMessage->message_content ?>
+                    <? if (isset($messageAttachments[$messageId])) { ?>
+                        <br>
+                        <br>
+                        <b>Ekli Dosyalar</b>
+                        <ul style="margin-left:20px">
+                            <? foreach ($messageAttachments[$messageId] as $attachment) { ?>
+                                <li><a href="<?= $attachment->getDownloadUrl() ?>" target="_blank"><?= $attachment->attachment_name ?></a></li>
+                            <? } ?>
+                        </ul>
+                    <? } ?>
+                </div>
+            </div>
+        <? } ?>
+    </div>
+<? } ?>
+<div class="row mt mb">
+    <? if (!is_null($button)) { ?>
+        <div class="col-xs-offset-6 col-xs-6 text-right"><a href="<?= $button['href'] ?>" class="btn btn-success"><?= $button['text'] ?></a></div>
+    <? } ?>
+</div>

@@ -1,0 +1,75 @@
+<?
+/**
+ * @var member_addresses_model[] $memberAddresses
+ */
+?>
+<? if ($memberAddresses) { ?>
+    <table class="table table-striped addressInfo">
+        <thead>
+        <tr>
+            <th>Alıcı İsmi</th>
+            <th>Adres Bilgileri</th>
+            <th class="text-center">Varsayılan</th>
+            <th class="text-right">İşlemler</th>
+        </tr>
+        </thead>
+        <tbody>
+        <? foreach ($memberAddresses as $memberAddress) { ?>
+            <tr class="registeredAddress address<?= $memberAddress->address_id ?>">
+                <td class="name"><?= $memberAddress->owner_name ?></td>
+                <td class="address2">
+                    <?
+                    if ($memberAddress->address_type == member_addresses_model::ADDRESS_TYPE_COMPANY) {
+                        echo "<b>" . $memberAddress->company_name . "</b><br>";
+                    }
+                    ?>
+                    <?= $memberAddress->address_text ?> <br>
+                    <?= $memberAddress->district()->district_name ?> -
+                    <?= $memberAddress->town()->town_name ?> /
+                    <?= $memberAddress->city()->city_name ?>
+                    <br/>Telefon: <?= $memberAddress->telephone ?>
+                    <span class="pull-right"><?
+                        if ($memberAddress->address_type == member_addresses_model::ADDRESS_TYPE_PERSONAL) {
+                            echo "T.C. Kimlik No: " . $memberAddress->tc_kimlik;
+                        } else {
+                            echo $memberAddress->tax_department . " V.D. No: " . $memberAddress->tax_no;
+                        }
+                        ?></span>
+                </td>
+                <td class="text-center"><?= ($memberAddress->is_default ? '<i class="glyphicon glyphicon-ok"></i>' : '') ?></td>
+                <td class="buttons text-right">
+                    <? if ($memberAddress->need_update) { ?>
+                        <span class="label label-danger mb5" style="display: inline-block">Güncellenme Gerekli</span>
+                    <? } ?>
+                    <div class="editAddress">
+                        <a href="javascript:void(0)" onclick="address_form(<?= $memberAddress->address_id ?>)" data-toggle="modal" data-target="#addresses"
+                            class="btn btn-default btn-xs">Düzenle</a>
+                        <a href="/account/deleteAddress/<?= $memberAddress->address_id ?>" data-rel="ajax" onclick="return confirm('Adresi silmek istediğinizden emin misiniz ?');">
+                            <span class="delete btn btn-default btn-xs">Sil</span></a>
+                    </div>
+                </td>
+            </tr>
+        <? } ?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        </tfoot>
+    </table>
+<? } else { ?>
+    <div class="alert alert-info mb">
+        Sistemde kayıtlı adresiniz bulunmuyor. "Yeni Adres Ekle" butonuna basarak adres tanımlayabilirsiniz.
+    </div>
+<? } ?>
+<div class="addAddress NewAddress mb" align="center">
+    <a href="javascript:void(0)" data-toggle="modal" data-target="#addresses" class="btn btn-warning btn-md" onclick="address_form('0')">Yeni Adres Ekle</a>
+</div>
+<script type="text/javascript">
+    function address_form(addressId) {
+        $.get("/account/manageAddress/" + addressId, function (data) {
+            $('body').append(data);
+            $('.modal').modal('toggle')
+        });
+    }
+</script>

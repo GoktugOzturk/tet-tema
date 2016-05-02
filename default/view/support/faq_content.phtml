@@ -1,0 +1,22 @@
+<div class="panel-group" id="accordion">
+    <? if (isset($faq_content)) {
+        $counter = 0; ?>
+        <? foreach ($faq_title as $key => $val) {
+            $counter++; ?>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" class="<?= ($counter == 1 ? '' : 'collapsed') ?>" href="#collapse<?= $key ?>">
+                            <?= $val ?>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse<?= $key ?>" class="panel-collapse collapse <?= ($counter == 1 ? 'in' : '') ?>">
+                    <div class="panel-body">
+                        <?= $faq_content[$key] ?>
+                    </div>
+                </div>
+            </div>
+        <? } ?>
+    <? } ?>
+</div>

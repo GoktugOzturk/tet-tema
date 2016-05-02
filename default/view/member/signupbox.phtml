@@ -1,0 +1,58 @@
+<div class="modal fade" id="sign-up" tabindex="-1" role="dialog" aria-labelledby="signupLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 830px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="signupLabel">Sitemize Üye Olun</h4>
+            </div>
+            <div class="modal-body">
+                <div class="socialLogin">
+                    <p class="text-center">Sosyal medya hesabınızı kullanarak zahmetsizce sitemize üye olabilirsiniz.</p>
+                    <div class="text-center">
+                        <button type="submit" onclick="window.location='/member/oauth/facebook/?b64=<?= base64_encode($redirectTo) ?>'" class="btn btn-default signWithFacebook">
+                            Facebook ile Bağlan
+                        </button>
+                        &nbsp;
+                        <button type="submit" onclick="window.location='/member/oauth/google/?b64=<?= base64_encode($redirectTo) ?>'" class="btn btn-default signWithGooglePlus">
+                            Google+ ile Bağlan
+                        </button>
+                    </div>
+                </div>
+                <div class="text-center"><img src="/img/login-seperator.png" width="320"></div>
+                <p class="text-center">Sadece aşağıdaki bilgilerini vererek sitemizden alışveriş yapmaya başlayabilirsiniz.</p>
+                <form method="post" action="<?= app::getUrl(ACTIVE_APP, "https") ?>/ajax/signup" role="form" id="registerForm" class="form-horizontal" novalidate="novalidate">
+                    <input type="hidden" value="<?= $redirectTo ?>" name="redirectTo">
+                    <div class="form-group mt">
+                        <div class="col-xs-5 col-xs-offset-1"><label for="SignupName">Adınız:</label> <input type="text" id="SignupName" class="form-control" name="firstname">
+                        </div>
+                        <div class="col-xs-5"><label for="SignupSurname">Soyadınız:</label> <input type="text" id="SignupSurname" class="form-control" name="surname"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-5 col-xs-offset-1">
+                            <label for="SignupEmail">E-Posta Adresi:</label> <input type="email" id="SignupEmail" class="form-control" onkeypress="return disableSpaceKey(event);"
+                                name="email">
+                        </div>
+                        <div class="col-xs-5">
+                            <label for="SignupPassword">Parola:</label> <input type="password" id="SignupPassword" class="form-control" name="passwd">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-10 col-xs-offset-1 text-left">
+                            <div class="checkbox">
+                                <label> <input type="checkbox" checked="checked" name="subscription" id="subscription">Kampanyalar ile ilgili e-posta mesajları almak
+                                    istiyorum.</label>
+                            </div>
+                            <div class="mt">
+                                <button class="btn btn-warning noiseBg" type="submit" id="submitButton">Hesabımı Oluştur</button>
+                                &nbsp; <a href="<?= $redirectTo ?>" class="btn btn-default login-required">Zaten Üyeyim</a>
+                            </div>
+                            <div class="mt">
+                                Hesap oluşturarak <a target="_blank" href="/uyelik-sozlesmesi" class="b">üyelik sözleşmesini</a> okuduğunuzu ve kabul ettiğinizi onaylıyorsunuz.
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+<?
+/**
+ * @var ob_order $order
+ */
+?>
+<? if (isset($products) && count($products)) { ?>
+    <form action="/order/defectReturnProducts/<?= $order->order_code ?>" method="POST" enctype="multipart/form-data" role="form">
+        <input type="hidden" name="form" value="return-form">
+        <div class="alert alert-info">Lütfen aşağıdaki iade edilebilir ürünlerden iade etmek istediğiniz ürünlerin adetlerini ve iade nedenlerini seçiniz.</div>
+        <h4>İade Talebi Oluşturulabilir Ürünler</h4>
+        <div class="well">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th class="col-xs-6">Ürün Adı</th>
+                    <th class="col-xs-1">Adet</th>
+                    <th class="col-xs-1">İade Adedi</th>
+                    <th class="col-xs-4 r">İade Nedeni</th>
+                </tr>
+                </thead>
+                <?
+                $i = 0;
+                foreach ($products as $orderProductId => $product) {
+                    $i++;
+                    ?>
+                    <tr>
+                        <td>
+                            <div class="checkbox">
+                                <label> <input type="checkbox" name="check[<?= $product['orderProductId'] ?>]" id="check<?= $i ?>">
+                                    <?= $product['productName'] ?>
+                                </label>
+                            </div>
+                        </td>
+                        <td><?= $product['quantity'] ?></td>
+                        <td>
+                            <input type="text" name="quantity[<?= $product['orderProductId'] ?>]" value="<?= $product['quantity'] ?>" style="width: 40px"
+                                class="form-control input-sm">
+                        </td>
+                        <td class="r"><?= form::select("reason_option[{$product['orderProductId']}]", $reasons, '', array('class' => 'form-control'), true) ?></td>
+                    </tr>
+                <? } ?>
+            </table>
+        </div>
+        <h4>İade Sebebinizi Açıklayın:</h4>
+        <p>
+            <textarea name="reason" class="form-control" rows="5" style="width: 100%"><?= isset($return['reason']) ? $return['reason'] : "" ?></textarea>
+        </p>
+        <p>
+            <input type="submit" name="send" value="İade Talebi Oluştur" class="btn btn-primary">
+        </p>
+    </form>
+<? } ?>
+<? if (isset($return)) { ?>
+    <a href="/support/ticketDetail/<?= $return['ticketId'] ?>" style="color:green; font-weight:bold;">Destek Talebi Detayları için Tıklayınız</a>
+<? } ?>
+<br/><br/>
+<? if (isset($waitingProducts) && count($waitingProducts)) { ?>
+    <h3>İade Sürecindeki Ürünler</h3>
+    <table class="table table-striped table-hover">
+        <tbody>
+        <tr>
+            <th class="l">Ürün Adı</th>
+            <th class="c">Adet</th>
+            <th class="r">İade Adedi</th>
+            <th class="r">İade Nedeni</th>
+            <th class="r">Durum</th>
+            <th class="r">İşlem</th>
+        </tr>
+        </tbody><?
+        foreach ($waitingProducts as $orderProductId => $product) {
+            $cancelLink = "-";
+            if (in_array($product['status'], array(
+                order_return_products_model::RETURN_PRODUCT_STATUS_WAITINGCUSTOMERCARE,
+                order_return_products_model::RETURN_PRODUCT_STATUS_APPROVEDBYCUSTOMERCARE,
+                order_return_products_model::RETURN_PRODUCT_STATUS_APPROVEDFORSUPPLIER,
+            ))) {
+                $cancelLink = '<a href="/order/defectReturnProducts/' . $order->order_code . '?cancel=' . $product['returnProductId'] . '" class="btn btn-xs btn-danger" title="Vazgeç"><i class="glyphicon glyphicon-remove"></i></a>';
+            }
+            if (in_array($product['status'], array('Retured', 'ReturnedToCustomer', 'NegotiatedByCustomercare'))) {
+                $color = "";
+            }
+            ?>
+            <tr>
+                <td class="l"><?= $product['productName'] ?></td>
+                <td class="c"><?= $product['quantity'] ?></td>
+                <td class="r"><?= $product['returnQuantity'] ?></td>
+                <td class="r"><?= $product['reasonOption'] ?></td>
+                <td class="r"><?= order::$returnProductStatues[$product['status']] ?></td>
+                <td class="r"><?= $cancelLink ?></td>
+            </tr>
+        <? } ?>
+    </table>
+<? } ?>

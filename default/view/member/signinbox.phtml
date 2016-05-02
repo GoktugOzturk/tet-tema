@@ -1,0 +1,50 @@
+<?
+/**
+ * @var string $redirectTo
+ * @var string $b64
+ */
+?>
+<div class="modal fade" id="sign-in" tabindex="-1" role="dialog" aria-labelledby="signinLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="signinLabel">Giriş Yap</h4>
+            </div>
+            <div class="modal-body">
+                <div class="socialLogin">
+                    <p class="text-center">Sosyal medya hesabınızı kullanarak giriş yapabilirsiniz.</p>
+                    <div class="text-center">
+                        <button type="submit" onclick="window.location='/member/oauth/facebook/?b64=<?= $b64 ?>'" class="btn btn-default signWithFacebook">Facebook ile Bağlan
+                        </button>
+                        &nbsp;
+                        <button type="submit" onclick="window.location='/member/oauth/google/?b64=<?= $b64 ?>'" class="btn btn-default signWithGooglePlus">Google+ ile Bağlan
+                        </button>
+                    </div>
+                </div>
+                <div class="text-center"><img src="/img/login-seperator.png" width="320"></div>
+                <p class="text-center">E-Postanızı ve Parolanızı girerek giriş yapabilirsiniz.</p>
+                <form method="post" action="<?= app::getUrl(ACTIVE_APP, "https") ?>/ajax/signin" role="form" id="loginForm" class="form-horizontal">
+                    <input type="hidden" value="<?= $b64 ?>" name="redirectTo">
+                    <div class="form-group mt">
+                        <div class="col-xs-10 col-xs-offset-1">
+                            <label for="LoginEmail">E-Posta Adresiniz:</label> <input type="email" id="LoginEmail" class="form-control" name="email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-10 col-xs-offset-1">
+                            <label for="LoginPassword">Parolanız:</label> <input type="password" id="LoginPassword" class="form-control" name="password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-10 col-xs-offset-1 text-left">
+                            <button class="btn btn-warning noiseBg" type="submit" id="submitButton">Giriş Yap</button>
+                            &nbsp; <a href="<?= $redirectTo ?>" class="btn btn-default signup-required">Üye Değilim</a> &nbsp; <a href="/member/forgot_password">Parolamı
+                                Unuttum</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

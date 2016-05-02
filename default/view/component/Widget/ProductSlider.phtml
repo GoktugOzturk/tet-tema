@@ -1,0 +1,23 @@
+<?
+/**
+ * @var int $id
+ * @var string $title
+ * @var \product_item[] $products
+ */
+?>
+<div class="widget widgetSlider mb <?= $id ?>">
+    <h4><?= $title ?></h4>
+    <div class="row">
+        <div class="col-xs-1"><a href="javascript:" onclick="widgetShowPrevious('<?= $id ?>')" class="sliderArrow"><i class="glyphicon glyphicon-menu-left"></i></a></div>
+        <div class="col-xs-10">
+            <div class="row">
+                <? foreach ($products as $key => $product) { ?>
+                    <div class="col-xs-slider">
+                        <?= $product->generate() ?>
+                    </div>
+                <? } ?>
+            </div>
+        </div>
+        <div class="col-xs-1"><a href="javascript:" onclick="widgetShowNext('<?= $id ?>')" class="sliderArrow"><i class="glyphicon glyphicon-menu-right"></i></a></div>
+    </div>
+</div>

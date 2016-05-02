@@ -1,0 +1,10 @@
+<?
+/**
+ * @var string $messageType
+ * @var string $messageText
+ */
+if (!in_array($messageType, array('danger', 'warning', 'success', 'info'))) {
+    $messageType = "error";
+}
+?>
+<div class="alert alert-<?= $messageType ?>"><?= $messageText ?></div>

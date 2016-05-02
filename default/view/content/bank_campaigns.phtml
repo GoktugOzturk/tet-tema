@@ -1,0 +1,38 @@
+<?
+/**
+ * @var content_model[] $contents
+ */
+?>
+<style>
+    .bankCampaigns .bankArea {
+        min-height: 120px;
+        border-bottom: 1px dotted #eee;
+        margin-bottom: 10px;
+        padding-bottom: 15px;
+    }
+
+    .bankCampaignDetails h2 {
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+
+    .bankCampaignDetails p {
+        line-height: 1.5
+    }
+</style><h1>Banka Kampanyaları</h1>
+<div class="bankCampaigns">
+    <? foreach ($contents as $content) { ?>
+        <? $cardName = strtolower(str_replace("CardCampaign", "", $content->content_key)) ?>
+        <div class="bankArea row <?= $cardName ?>">
+            <div class="col-xs-3 bankLogoImage fl"><img src="/img/bank_campaigns/<?= $cardName ?>.jpg" width="165"/></div>
+            <div class="col-xs-9 bankCampaignDetails fr">
+                <h2 class="contentTitle"><?= $content->getFormattedTitle() ?></h2>
+                <p><strong>Kampanya koşulları:</strong> <br>
+                    <?= $content->getFormattedText() ?>
+                </p>
+            </div>
+        </div>
+    <? } ?>
+</div>

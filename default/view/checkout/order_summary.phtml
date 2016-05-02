@@ -1,0 +1,149 @@
+<?
+/**
+ * @var ob_basket $basket
+ * @var array $orderSummaryOptions
+ * @var bool $useMemberBalance
+ * @var member_addresses_model $deliveryAddress
+ * @var member_addresses_model $invoiceAddress
+ */
+?>
+<? if ($orderSummaryOptions['showMemberBalance'] && $basket->memberBalance > 0 && ($basket->useMemberBalance === true || round($basket->memberBalance,
+            2) < round($basket->sumAmount(), 2))
+) { ?>
+    <h2 class="orderBalanceh">HESAP ÖZETİNİZ</h2>
+    <div class="orderBalance clearfix" style="margin-bottom: 16px">
+        <form role="form" method="POST">
+            <input type="hidden" name="useBalance" value="0">
+            <div class="form-group">
+                <p><strong>Kullanılabilir Bakiye: <?= icms::format_money($basket->memberBalance) ?></strong></p>
+                <p>Bakiyenizi kullanarak ödemeniz gereken tutarı azaltabilirsiniz.</p>
+                <div class="checkbox">
+                    <label> <input type="checkbox" name="useBalance" value="1" class="useBalance"<?= ($useMemberBalance ? ' checked' : '') ?>> <strong>Evet bakiyemi kullan</strong>
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+<? } ?>
+<div class="orderSummaryDetails mb">
+    <h2 class="basketColor">SİPARİŞ ÖZETİNİZ</h2>
+    <? if ($basket->cargoPrice < $basket->defaultCargoPrice) { ?>
+        <div class="orderArea pb5 mb5 row">
+            <div class="col-xs-1"><i class="glyphicon glyphicon-ok-circle"></i></div>
+            <div class="col-xs-11">
+                <strong>
+                    <?= ($basket->cargoPrice == 0 ? 'Ücretsiz' : 'İndirimli') ?> kargo</strong> fırsatından faydalanıyorsunuz.
+            </div>
+        </div>
+    <? } ?>
+    <div class="orderArea pb5 mb5 clearfix">
+        <div class="col-xs-6 text-right">Sepet Toplamı :</div>
+        <div class="col-xs-6 text-left priceStrong"><?= icms::format_money($basket->sumSalePrice) ?></div>
+    </div>
+    <div class="orderArea pb5 mb5 clearfix shippingFee">
+        <div class="col-xs-6 text-right">Kargo Ücreti :</div>
+        <div class="col-xs-6 text-left priceStrong">
+            <? if ($basket->cargoPrice < $basket->defaultCargoPrice) { ?>
+                <del><?= icms::format_money($basket->defaultCargoPrice) ?></del>
+            <? } ?>
+            <?= ($basket->cargoPrice > 0 ? icms::format_money($basket->cargoPrice) : 'Ücretsiz') ?>
+        </div>
+    </div>
+    <? if ($basket->useMemberBalance) { ?>
+        <div class="orderArea pb5 mb5 clearfix">
+            <div class="col-xs-6 text-right">Kullanılacak Bakiye:</div>
+            <div class="col-xs-6 text-left priceStrong">- <?= icms::format_money($basket->memberBalance) ?></div>
+        </div>
+    <? } ?>
+    <? if ($basket->member_check_id > 0 && $basket->discountProductAmount > 0) { ?>
+        <div class="orderArea pb5 mb5 clearfix">
+            <div class="col-xs-6 text-right">Alışveriş Çeki :</div>
+            <div class="col-xs-6 text-left priceStrong">- <?= icms::format_money($basket->discountProductAmount) ?></div>
+        </div>
+    <? } ?>
+    <? if ($basket->coupon_id > 0 && $basket->discountProductAmount > 0) { ?>
+        <div class="orderArea pb5 mb5 clearfix">
+            <div class="col-xs-6 text-right">Kupon Kodu :</div>
+            <div class="col-xs-6 text-left priceStrong"> - <?= icms::format_money($basket->discountProductAmount) ?>
+                <? if ($basket->promoteCoupon()->coupon_type == promote_coupons_model::COUPON_TYPE_PERCENT) {
+                    $promoteCouponRules = json_decode($basket->promoteCoupon()->coupon_rule);
+                    ?> ( %<?= $promoteCouponRules->discount_amount ?> )
+                <? } ?>
+            </div>
+        </div>
+    <? } ?>
+    <div class="orderArea pb5 mb5 clearfix text-center">
+        <div class="totalPrice"><span>Ödenecek Tutar</span><br> <strong class="totalChargeAmount"><?= icms::format_money($basket->sumAmount()) ?></strong></div>
+        <div class="totalPrice">
+            <a href="javascript:" type="button"
+                class="<?= (!is_null($orderSummaryOptions['buttonClass']) ? $orderSummaryOptions['buttonClass'] : 'btn btn-warning Buy noiseBg continueBtn') ?>">
+                <?= (!is_null($orderSummaryOptions['buttonTitle']) ? $orderSummaryOptions['buttonTitle'] : 'Satın Al') ?>
+            </a>
+        </div>
+    </div>
+</div><!-- orderBasketDetails Sonu -->
+<? if ($orderSummaryOptions['selectedAddress']) { ?>
+    <div class="orderBasketDetails mb">
+        <h2 class="text-left m0">ADRES BİLGİLERİ
+            <? if ($orderSummaryOptions['changeButtons']) { ?>
+                <a href="/checkout/delivery/choose" style="margin-top: 3px; font-size: 9px;" class="pull-right btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i>
+                    DEĞİŞTİR</a>
+            <? } ?>
+        </h2>
+        <? if ($deliveryAddress) { ?>
+            <table class="table">
+                <thead>
+                <tr style="background-color: #f9f9f9;">
+                    <th><?= (($deliveryAddress->address_id == $invoiceAddress->address_id) ? 'Teslimat ve Fatura Adresi' : 'Teslimat Adresi') ?> </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="selectedAddress"><?= $deliveryAddress->address_text . '<br>' . $deliveryAddress->district()->district_name . " - " . $deliveryAddress->town()->town_name . ' - ' . $deliveryAddress->city()->city_name ?></td>
+                </tr>
+                </tbody>
+            </table>
+        <? } ?>
+        <? if ($invoiceAddress && $invoiceAddress->address_id != $deliveryAddress->address_id) { ?>
+            <table class="table">
+                <thead>
+                <tr style="background-color: #f9f9f9;">
+                    <th>Fatura Bilgileri</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="selectedAddress"><?= $invoiceAddress->address_text . '<br>' . $invoiceAddress->district()->district_name . " - " . $invoiceAddress->town()->town_name . ' - ' . $invoiceAddress->city()->city_name ?></td>
+                </tr>
+                </tbody>
+            </table>
+        <? } ?>
+    </div>
+<? } ?>
+<!-- Sipariş Özetiniz Sonu -->
+<div class="orderBasketDetails clearfix mb">
+    <? if ($orderSummaryOptions['basketInItems']) { ?>
+    <h2 class="text-left m0">ALDIĞINIZ ÜRÜNLER
+        <? if ($orderSummaryOptions['basketInItems']) { ?>
+            <a href="/basket" style="margin-top: 3px; font-size: 9px;" class="pull-right btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i> DEĞİŞTİR</a>
+        <? } ?>
+    </h2>
+    <table class="table">
+        <thead>
+        <tr style="background-color: #f9f9f9;">
+            <th>Ürün</th>
+            <th class="text-right">Adet</th>
+        </tr>
+        </thead>
+        <tbody>
+        <? foreach ($basket->productData as $productData) {
+            $product = singleton::product($productData->productId) ?>
+            <tr>
+                <td class="inBasketPr"><?= $product->full_name ?></td>
+                <td class="text-right"><?= $productData->quantity ?></td>
+            </tr>
+        <? } ?>
+        </tbody>
+    </table>
+</div>
+<? } ?>

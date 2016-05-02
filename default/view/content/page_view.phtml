@@ -1,0 +1,16 @@
+<?
+/**
+ * @var content_model[] $contents
+ */
+?>
+<div class="contentPage">
+    <? if (isset($page_title) && !empty($page_title)) { ?>
+        <h1 class="pageTitle"><?= $page_title ?></h1>
+    <? } ?>
+    <? foreach ($contents as $content) {
+        if (!empty($content->content_title)) { ?>
+            <h2 class="contentTitle"><?= $content->getFormattedTitle() ?></h2>
+        <? } ?>
+        <p><?= $content->getFormattedText() ?></p>
+    <? } ?>
+</div>

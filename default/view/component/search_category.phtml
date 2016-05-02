@@ -1,0 +1,36 @@
+<div class="input-group-btn" id="catSelectBox">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span id="selectedCategoryName">Tüm Kategorilerde</span>
+        <span class="caret"></span></button>
+    <ul class="dropdown-menu" role="menu">
+        <? foreach ($searcCategories as $catId => $category) { ?>
+            <li><a href="javascript:" data-cat="<?= $catId ?>"><?= $category ?></a></li>
+        <? } ?>
+        <li class="divider"></li>
+        <li><a href="javascript:" data-cat="0">Tüm Kategorilerde</a></li>
+    </ul>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#search').submit(function () {
+            var query = $('#searchQuery').val();
+            if (query.length < 2) {
+                alert('Aranacak kelimeyi yazın.');
+                return false;
+            } else {
+                var categoryId = $('#search-category').val();
+                if (categoryId < 1) {
+                    $('#search-category').attr('disabled', 'disabled');
+                } else {
+                    $('#search-category').removeAttr('disabled');
+                }
+                return true;
+            }
+        });
+        var selectedCategoryId = getParameterByName('categoryId') || 0;
+        var $searchBox = $("#catSelectBox");
+        $searchBox.find('.dropdown-menu a').click(function () {
+            $('#search-category').val($(this).data('cat'));
+            $searchBox.find('#selectedCategoryName').html($(this).html());
+        }).filter("[data-cat=" + selectedCategoryId + "]").click();
+    });
+</script>

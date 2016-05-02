@@ -1,0 +1,32 @@
+<?
+/**
+ * @var bank_accounts_model[] $bankAccounts
+ */
+?>
+<div style="font-size: 16px;">
+    <strong>ALICI ADI:</strong> {FULL_COMPANY_NAME}
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-striped mt bankAccounts">
+    <thead>
+    <tr>
+        <th class="tabletd" valign="middle" style="width: 200px;"><strong>Banka</strong></th>
+        <th class="tabletd" valign="middle"><strong>IBAN / Hesap Bilgisi</strong></th>
+    </tr>
+    </thead>
+    <tbody>
+    <? foreach ($bankAccounts as $bankAccount) { ?>
+        <tr>
+            <td><img src="/img/bank_logo/wire-<?= $bankAccount->bank_id ?>.png"></td>
+            <td>
+                <span class="iban_number"><?= join(str_split($bankAccount->iban_number, 4), " ") ?></span> <span class="account_details"><?= $bankAccount->account_number ?></span>
+            </td>
+        </tr>
+    <? } ?>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="2" height="1" style="padding:0"></td>
+    </tr>
+    </tfoot>
+</table>
+

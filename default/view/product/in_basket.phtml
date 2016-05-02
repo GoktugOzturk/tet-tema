@@ -1,0 +1,24 @@
+<div class="contentPage">
+    <h2>ÜRÜN SEPETİNİZE EKLENDİ!</h2>
+    <div class="row mb">
+        <div class="col-xs-8">
+            <? foreach ($addedToBasket as $key => $product) { ?>
+                <div class="row">
+                    <div class="col-xs-3 addedImage"><a href="<?= $product['link'] ?>"><?= $product['image'] ?></a></div>
+                    <div class="col-xs-9 addedProduct"><a href="<?= $product['link'] ?>"><?= $product['name'] ?></a><br> <span><?= icms::format_money($product['price']) ?></span>
+                    </div>
+                </div>
+            <? } ?>
+        </div>
+        <div class="col-xs-4 addedDetails">
+            <? if ($key == '0') { ?>
+                Sepet Toplamınız : <strong><?= icms::format_money(session::get('basketSumAmount')) ?></strong> <br>
+                <span>Sepetinizde toplam <strong><?= session::get('basketProductCount') ?></strong> ürün var.</span>
+                <div class="addedButtons"><a class="btn btn-default btn-sm" href="<?= $productLink ?>">Alışverişe Devam Et</a> <a class="btn btn-warning btn-sm" href="/basket">Sepete
+                        Git
+                        <i class="glyphicon glyphicon-chevron-right"></i></a>
+                </div>
+            <? } ?>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+<?
+/**
+ * @var ob_member $obMember
+ * @var string $birthDate
+ * @var array $cityList
+ */
+?>
+<form class="form-horizontal" role="form" id="details" action="/account/details" method="post">
+    <div class="form-group">
+        <label for="firstname" class="col-xs-4 control-label">Adınız Soyadınız:</label>
+        <div class="col-xs-4">
+            <input type="text" class="form-control" id="firstname" name="firstname" value="<?= $obMember->firstname ?>" placeholder="Adınız">
+        </div>
+        <div class="col-xs-4">
+            <input type="text" class="form-control" id="surname" name="surname" value="<?= $obMember->surname ?>" placeholder="Soyadınız">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputEmail" class="col-xs-4 control-label">E-Posta Adresi:</label>
+        <div class="col-xs-8">
+            <input type="email" class="form-control" id="inputEmail" disabled placeholder="<?= $obMember->email ?>">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="birthdate" class="col-xs-4 control-label">Doğum Tarihi:</label>
+        <div class="col-xs-8">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                <input type="text" class="form-control" id="birthdate" name="birthdate" value="<?= $birthDate ?>" placeholder="GG.AA.YYYY"/>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="gender" class="col-xs-4 control-label">Cinsiyet:</label>
+        <div class="col-xs-8">
+            <label class="radio-inline"> <input type="radio" name="gender" id="gender_F" value="F" <?= ($obMember->gender == 'F' ? 'checked="checked"' : '') ?>> Kadın </label>
+            <label class="radio-inline"> <input type="radio" name="gender" id="gender_M" value="M" <?= ($obMember->gender == 'M' ? 'checked="checked"' : '') ?>> Erkek </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="phone_prefix" class="col-xs-4 control-label">Cep Telefonu:</label>
+        <div class="col-xs-2">
+            <input type="text" class="form-control" id="tel" placeholder="+90" disabled=""/>
+        </div>
+        <div class="col-xs-2">
+            <input type="text" class="form-control" id="phone_prefix" name="phone_prefix" maxlength="3" placeholder="xxx" value="<?= $phone_prefix ?>"/>
+        </div>
+        <div class="col-xs-4">
+            <input type="text" class="form-control" id="phone_number" name="phone_number" maxlength="7" placeholder="xxxxxxx" value="<?= $phone_number ?>"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="city_id" class="col-xs-4 control-label">Yaşadığınız Şehir:</label>
+        <div class="col-xs-8">
+            <?= form::select("city_id", $cityList, $obMember->city_id, array('class' => 'form-control select2', 'id' => "city_id")) ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-4 col-xs-8 checkbox">
+            <label>
+                <input type="checkbox" name="subscription" id="subscription" value="1" <?= ($obMember->subscription == 1 ? 'checked="checked"' : '') ?>> Kampanyalar ile ilgili
+                e-posta mesajları almak istiyorum.</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-4 col-xs-8">
+            <button type="button" onclick="$('#details').submit();" class="btn btn-warning">Bilgilerimi Güncelle</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    $(function () {
+        $('#birthdate').datepicker({
+            weekStart: 1,
+            startView: 2,
+            language: "tr",
+            autoclose: true,
+            format: "dd.mm.yyyy"
+        });
+    })
+</script>

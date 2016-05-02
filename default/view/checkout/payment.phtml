@@ -1,0 +1,183 @@
+<?
+/**
+ * @var ob_basket $basket
+ * @var bank_accounts_model $bankAccount
+ * @var string $creditCardContent
+ * @var string $wireTransferContent
+ * @var string $onBilgilendirmeFormu
+ */
+?>
+<div align="center" class="col-xs-8 col-xs-offset-2 checkoutStep">
+    <div class="checkoutStep2">
+        <ul>
+            <li><a href="/basket"><span>Alışveriş Sepeti</span></a></li>
+            <li><a href="/checkout/delivery/choose"><span>Adres Bilgileri</span></a></li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-8">
+        <ul id="paymentMethods" class="nav nav-tabs">
+            <? if ($basket->useMemberBalance === false && round($basket->memberBalance, 2) >= round($basket->sumAmount(), 2)) { ?>
+                <li><a href="#balance" data-movetotab="0" data-toggle="tab" data-paymentmethod="balance">Bakiye</a></li>
+            <? } ?>
+            <li><a href="#creditCard" data-toggle="tab" data-paymentmethod="creditCard">Kart ile Öde</a></li>
+            <li><a href="#wireTransfer" data-toggle="tab" data-paymentmethod="wireTransfer">Havale / EFT</a></li>
+            <li><a href="#onDelivery" data-toggle="tab" data-paymentmethod="onDelivery">Kapıda Ödeme</a></li>
+            <li><a href="#BKMExpress" data-toggle="tab" data-paymentmethod="BKMExpress">BKM Express</a></li>
+            <li><a href="#PayPal" data-toggle="tab" data-paymentmethod="PayPal">PayPal</a></li>
+        </ul>
+        <div id="paymentOptions" class="tab-content clearfix mb">
+            <? if ($basket->useMemberBalance === false && round($basket->memberBalance, 2) >= round($basket->sumAmount(), 2)) { ?>
+                <div class="tab-pane fade" id="balance">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="alert alert-info" role="alert">
+                                <p><strong>Kullanılabilir Bakiye: <?= icms::format_money($basket->memberBalance) ?></strong></p>
+                                <p>Hesabınızda ki bakiye ile siparişinizi tamamlayabilirsiniz.</p>
+                                <div class="checkbox">
+                                    <label> <input type="checkbox" id="useBalance"> <strong>Evet bakiyemi kullan</strong> </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <form action="/checkout/balance" method="POST" id="frmBalance">
+                                <input type="hidden" name="act" value="complete">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <? } ?>
+            <div class="tab-pane fade" id="creditCard">
+                <?= $creditCardContent ?>
+            </div>
+            <div class="tab-pane fade" id="wireTransfer">
+                <h2>Havale / EFT ile Ödeme</h2>
+                <?= $wireTransferContent ?>
+            </div>
+            <div class="tab-pane fade" id="onDelivery">
+                <h2>Kapıda Ödeme</h2>
+                Kapıda Ödeme ile Alışveriş İmkanı Çok Yakında <?= icms::site_com("da") ?>!
+            </div>
+            <div class="tab-pane fade" id="BKMExpress">
+                <h2>BKM Express</h2>
+                BKM Express ile Alışveriş İmkanı Çok Yakında <?= icms::site_com("da") ?>!
+            </div>
+            <div class="tab-pane fade" id="PayPal">
+                <h2>PayPal</h2>
+                PayPal ile Alışveriş İmkanı Çok Yakında <?= icms::site_com("da") ?>!
+            </div>
+        </div>
+        <a name="TermsConditions"></a>
+        <div class="checkoutContent mb" id="salesContract" style="display: none">
+            <div class="generalCartTitle mb">Ön Bilgilendirme Formu ve Mesafeli Satış Sözleşmesi</div>
+            <div class="contractInfo">
+                <?= $onBilgilendirmeFormu ?>
+            </div>
+            <div class="checkbox">
+                <label> <input type="checkbox" name="approve_terms"> <strong>Ön Bilgilendirme Formu ve Mesafeli Satış Sözleşmesi’ni okudum. Kabul ediyorum. </strong></label>
+            </div>
+            <div>
+                <a href="javascript:void(0)" class="btn btn-warning Buy noiseBg continueBtn disabled">Siparişi Tamamla</a>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var sumAmount = '<?=icms::format_money($basket->sumAmount())?>';
+            var activePaymentMethod, salesContract;
+            $(function () {
+                $('#paymentMethods').find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    activePaymentMethod = $(e.target).data("paymentmethod");
+                    // Sözleşmenin checkboxını kapat
+                    checkPaymentMethodStatus();
+                    $('input[name=approve_terms]').attr('checked', false).trigger('change');
+                    $('#useBalance').attr('checked', false).trigger('change');
+                }).filter(":first").tab('show');
+                $('.continueBtn').addClass('disabled').css('pointer-events', 'auto');
+                // Sözleşme checkbox değişince tamamla butonunu aktif/pasif yap
+                $('input[name=approve_terms]').on('change', function () {
+                    if ($(this).is(':checked')) {
+                        $('input[name=approve_terms]').prop('checked', true);
+                        $('.continueBtn').removeClass('disabled');
+                    } else {
+                        $('input[name=approve_terms]').prop('checked', false);
+                        $('.continueBtn').addClass('disabled').css('pointer-events', 'auto');
+                    }
+                });
+                $("body").on("click", ".continueBtn", function (e) {
+                    e.preventDefault();
+                    if (ChargeInProgress) {
+                        alert("Ödeme Yap butonuna sadece 1 defa basmanız yeterlidir.");
+                        return false;
+                    }
+                    switch (activePaymentMethod) {
+                        case "balance":
+                            if ($(this).hasClass("disabled")) {
+                                return false;
+                            }
+                            completeWithBalance();
+                            break;
+                        case "creditCard":
+                            if (checkCreditCardForm(true)) {
+                                completeWithCreditCard();
+                            }
+                            break;
+                        case "wireTransfer":
+                            if (checkWireTransferForm(false)) {
+                                completeWithWireTransfer();
+                            }
+                            break;
+                        default :
+                            location.reload();
+                            break;
+                    }
+                    if (checkPaymentMethodStatus() == true) {
+                    }
+                });
+                $('#useBalance').on('change', function () {
+                    if ($(this).is(':checked')) {
+                        $('#salesContract').show();
+                        $('.shippingFee').after('<div class="orderArea pb5 mb5 clearfix useMemberBalance"><div class="col-xs-6 text-right">Kullanılacak Bakiye:</div><div class="col-xs-6 text-left priceStrong">- <?=icms::format_money($basket->sumAmount())?></div></div>');
+                        $('.totalPrice strong').text('<?=icms::format_money(0)?>');
+                    } else {
+                        $('#salesContract').hide();
+                        $('.useMemberBalance').remove();
+                        $('.totalPrice strong').text(sumAmount);
+                    }
+                });
+            });
+            function checkPaymentMethodStatus() {
+                switch (activePaymentMethod) {
+                    case "balance":
+                        return checkBalanceForm();
+                        break;
+                    case "creditCard":
+                        return checkCreditCardForm();
+                        break;
+                    case "wireTransfer":
+                        return checkWireTransferForm(false);
+                        break;
+                    default :
+                        return false;
+                        break;
+                }
+            }
+            function completeWithBalance() {
+                if ($('#useBalance').is(':checked')) {
+                    if (checkBalanceForm() == true) {
+                        $('#frmBalance').submit();
+                    }
+                } else {
+                    alert('Devam etmek için bakiyenizin kullanılmasını onaylamalısınız.');
+                }
+            }
+            function checkBalanceForm() {
+                if ($("input[name=approve_terms]:checked").length < 1) {
+                    alert('Devam etmek için "Ön Bilgilendirme Formu ve Mesafeli Satış Sözleşmesi"ni Kabul Etmelisiniz.');
+                    return false;
+                }
+                return true;
+            }
+        </script>
+    </div>
+    <? view::show_blocks("col-xs-4") ?>
+</div>

@@ -1,0 +1,41 @@
+<?
+/**
+ * @var array $brandWords
+ * @var array $brandsByWords
+ * @var ob_brand $brand
+ */
+?>
+<div class="brandWord">
+    <h1>Tüm Markalar</h1>
+    <ul class="clearfix">
+        <? foreach ($brandWords as $brandWord) { ?>
+            <li><a href="/markalar/<?= $brandWord ?>"><?= $brandWord ?></a></li>
+        <? } ?>
+    </ul>
+</div>
+<div class="harflereGoreMarkalar mb">
+    <? foreach ($brandsByWords as $word => $brands) { ?>
+        <? if (count($brands)) { ?>
+            <div class="row brandShortList">
+                <div class="col-xs-2 brandBigWord"><?= $word ?></div>
+                <div class="col-xs-10 brandNames">
+                    <ul class="row">
+                        <?
+                        $i = 0;
+                        foreach ($brands as $brand) {
+                            $i++;
+                            if ($i == 17) {
+                                break;
+                            }
+                            ?>
+                            <li class="col-xs-2"><a class="brandTitle" href="<?= link::toBrand($brand) ?>?from=Markalar"><?= $brand->brand_name ?></a></li>
+                        <? } ?>
+                        <? if (count($brands) > 17) { ?>
+                            <li class="col-xs-2"><a href="/markalar/<?= $word ?>" class="brandtitle active">Tümü <i class="glyphicon glyphicon-chevron-right"></i></a></li>
+                        <? } ?>
+                    </ul>
+                </div>
+            </div>
+        <? } ?>
+    <? } ?>
+</div>

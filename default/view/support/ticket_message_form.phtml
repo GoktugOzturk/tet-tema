@@ -1,0 +1,30 @@
+<div class="well">
+    <form class="form-horizontal mt" role="form" id="ticketForm" action="/support/newMessage/<?= $ticketId ?>" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="form" value="ticketForm"/>
+        <div class="form-group">
+            <label for="ticketMessage" class="col-xs-2 control-label">Mesajınız:</label>
+            <div class="col-xs-10">
+                <textarea id="ticketMessage" name="ticket_message" rows="10" class="form-control required"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="attachment">Dosya Eki:</label>
+            <div class="col-xs-10">
+                <div class="input-group">
+                    <span class="input-group-btn"><span class="btn btn-primary btn-file">Gözat&hellip; <input type="file" name="attachment[]" multiple="multiple"></span></span>
+                    <input type="text" id="attachment" class="form-control btn-filename" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-10 col-xs-offset-2">
+                <button class="btn btn-warning" type="submit">Mesajı Gönder</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#ticketForm").validate();
+    });
+</script>
