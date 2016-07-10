@@ -1,0 +1,111 @@
+<?
+/**
+ * @var category_model[] $catalogs
+ * @var category_model $category
+ * @var string $navigationPills
+ * @var string $navigationMessage
+ */
+?>
+<div class="headerMenu">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3 openMenu">
+                <div class="dropdownTitle"><a href="/" title="Tüm Kategoriler" class="has-sub"> TÜM KATEGORİLER <i class="glyphicon glyphicon-circle-arrow-down"></i></a></div>
+                <ul class="dropdownOpener <?= (view::$menuOpenFirstLevel ? "openBlock" : "") ?>">
+                    <? if (count($catalogs)) { ?>
+                        <? foreach ($catalogs as $catalog) { ?>
+                            <li>
+                                <a href="<?= $catalog['link'] ?>"><?= $catalog['name'] ?></a>
+                                <? if (isset($childCategories[$catalog['id']]) && count($childCategories[$catalog['id']])) { ?>
+                                    <div class="subMenuContent clearfix">
+                                        <div class="subMenuItems">
+                                            <span class="subMenuHeader"><?= icms::strtoupper($catalog['name']) ?></span>
+                                            <ul>
+                                                <? foreach ($childCategories[$catalog['id']] as $category) { ?>
+                                                    <li><a href="<?= $category['link'] ?>"><?= $category['name'] ?></a></li>
+                                                <? } ?>
+                                            </ul>
+                                        </div>
+                                        <? /*
+                                        <div class="row menuCat">
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/229467/big/3rf-00002.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Mouse</a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/218691/big/638_7.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Akıllı Telefonlar</a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/231278/big/2014421358_asusx552cl5.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Notebooklar</a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/229467/big/3rf-00002.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Mouse</a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/229467/big/3rf-00002.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Mouse</a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/229467/big/3rf-00002.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Mouse</a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/229467/big/3rf-00002.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Mouse</a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/229467/big/3rf-00002.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Mouse</a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <a class="catImg" href=""><img src="http://www.bilisimport.com/ProductImages/229467/big/3rf-00002.jpg" width="125" /></a>
+                                                <a class="catTitle" href="">Mouse</a>
+                                            </div>
+                                        </div>
+                                        */ ?>
+                                    </div>
+                                <? } ?>
+                            </li>
+                        <? } ?>
+                    <? } ?>
+                </ul>
+                <!-- buraya menu gelecek -->
+            </div>
+            <script type="text/javascript">
+                <? /*
+                $(document).ready(function () {
+                    <? if( !view::$menuOpenFirstLevel ) { ?>
+                    $(".openMenu").hover(function () {
+                        $(this).find(".dropdownOpener").fadeIn("fast");
+                    }).mouseleave(function () {
+                        $(this).find(".dropdownOpener").fadeOut("fast");
+                    });
+                    <? } ?>
+                    $(".dropdownOpener > li").hover(function () {
+                        $(this).find(".subMenuContent").fadeIn("fast");
+                    }).mouseleave(function () {
+                        $(this).find(".subMenuContent").fadeOut("fast");
+                    });
+                });
+ */ ?>
+            </script>
+            <div class="col-xs-9">
+                <div class="navAds clearfix">
+                    <? if (!empty($navigationPills)) { ?>
+                        <div class="pull-left NavigationPills">
+                            <?= $navigationPills ?>
+                        </div>
+                    <? } ?>
+                    <? if (!empty($navigationMessage)) { ?>
+                        <div class="pull-right NavigationMessage">
+                            <?= $navigationMessage ?>
+                        </div>
+                    <? } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

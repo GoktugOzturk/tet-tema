@@ -1,0 +1,104 @@
+<div id="footer">
+    <div class="footertop">
+        <div class="container">
+            <span class="footervalign pull-left">BÜLTENİMİZE KATILIN!</span>
+            <div class="pull-left">
+                <form id="newsletter-form" action="/member/newsletter/" method="post">
+                    <input type="text" name="email" class="form-control input-sm round" placeholder="E-posta Adresiniz" style="border-radius: 50px; width: 200px; float: left;">
+                    <button class="btn btn-warning newsletter" type="submit">
+                        <i class="glyphicon glyphicon-bullhorn"></i>
+                    </button>
+                    <input type="hidden" name="newsletter-form" value="1"/>
+                </form>
+            </div>
+            <div class="footerSocialArea">
+                <ul>
+                    <? $socialData = \TeknoETicaret\Config\Settings::get("social") ?>
+                    <? if ($socialData['facebook']['haspage'] && !empty($socialData['facebook']['pageurl'])) { ?>
+                        <li>
+                            <a title="Facebook" href="<?= $socialData['facebook']['pageurl'] ?>" target="_blank" rel="nofollow"><span class="footer-social social-facebook"></span></a>
+                        </li>
+                    <? } ?>
+                    <? if ($socialData['twitter']['haspage'] && !empty($socialData['twitter']['pageurl'])) { ?>
+                        <li>
+                            <a title="Twitter" href="<?= $socialData['twitter']['pageurl'] ?>" target="_blank" rel="nofollow"><span class="footer-social social-twitter"></span></a>
+                        </li>
+                    <? } ?>
+                    <? if ($socialData['googleplus']['haspage'] && !empty($socialData['googleplus']['pageurl'])) { ?>
+                        <li>
+                            <a title="Google Plus" href="<?= $socialData['googleplus']['pageurl'] ?>" target="_blank" rel="publisher"><span
+                                    class="footer-social social-google-plus"></span></a>
+                        </li>
+                    <? } ?>
+                    <? if ($socialData['pinterest']['haspage'] && !empty($socialData['pinterest']['pageurl'])) { ?>
+                        <li>
+                            <a title="Pinterest" href="<?= $socialData['pinterest']['pageurl'] ?>" target="_blank" rel="nofollow"><span
+                                    class="footer-social social-pinterest"></span></a>
+                        </li>
+                    <? } ?>
+                    <? if ($socialData['instagram']['haspage'] && !empty($socialData['instagram']['pageurl'])) { ?>
+                        <li>
+                            <a title="Instagram" href="<?= $socialData['instagram']['pageurl'] ?>" target="_blank" rel="nofollow"><span
+                                    class="footer-social social-instagram"></span></a>
+                        </li>
+                    <? } ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container footerCat">
+        <div class="row">
+            <div class="col-xs-8">
+                <? $footerSeoContent = content_model::getByKey("Anasayfa"); ?>
+                <? if ($footerSeoContent) { ?>
+                    <h5><?= $footerSeoContent->getFormattedTitle() ?></h5>
+                    <p>
+                        <?= $footerSeoContent->getFormattedText() ?>
+                    </p>
+                <? } ?>
+            </div>
+            <div class="col-xs-4">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h5>Hakkımızda</h5>
+                        <ul>
+                            <li><a href="/hakkimizda">Biz Kimiz</a></li>
+                            <li><a href="/banka-hesap-bilgileri">Hesap Numaraları</a></li>
+                            <li><a href="/banka-kampanyalari">Banka Kampanyaları</a></li>
+                            <li><a href="/satis-sozlesmesi" rel="nofollow">Satış Sözleşmesi</a></li>
+                            <li><a href="/uyelik-sozlesmesi" rel="nofollow">Üyelik Sözleşmesi</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-6">
+                        <h5>Destek</h5>
+                        <ul>
+                            <li><a href="/support/faq" rel="nofollow">Sıkça Sorulan Sorular</a></li>
+                            <li><a href="/support/request">Bize Sorun</a></li>
+                            <li><a href="/iletisim">İletişim</a></li>
+                            <li><a href="/siparis-takip" rel="nofollow" class="login-required">Sipariş Takip</a></li>
+                            <li><a href="/order/defectreturn" rel="nofollow" class="login-required">Arıza/İade Bildirimi</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footerbottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-5"><span class="footervalign"><?= \TeknoETicaret\Config\Settings::get('site.name') ?> &copy; <?= date('Y') ?> - Her hakkı saklıdır.</span></div>
+                <div class="col-xs-7"><img src="<?=$themeDir?>/img/footer-logo.jpg" width="467" height="29">
+                    <a href="http://www.teknomavi.com" title="Bu sitenin e-ticaret altyapısı TeknoMavi tarafından geliştirilmiştir.">
+                        <img class="pull-right" src="<?=$themeDir?>/img/teknomavi-logo.png" alt="TeknoMavi" width="50" height="29"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?= view::getSemanticData() ?>
+<?= view::load_scripts() ?>
+<?
+if (!defined("DISABLE_TRACKERS")) {
+    echo view::load("tracker/global_tracker");
+}
+?>

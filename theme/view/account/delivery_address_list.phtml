@@ -1,0 +1,56 @@
+<?
+/**
+ * @var member_delivery_address_model[] $deliveryAddresses
+ */
+?>
+<div class="alert alert-info mb">
+    Bu bölümde yeni teslimat adresi oluşturabilir, mevcut adreslerinizi düzenleyebilir ya da silebilirsiniz.
+    Adreslerinizde yapacağınız değişiklikler, daha önce vermiş olduğunuz siparişleri etkilemez.
+</div>
+<div class="row">
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="address-item-new box">
+            <a class="b" data-toggle="modal" data-target="#addresses" onclick="manageDeliveryAddress('0')">
+                <i class="glyphicon glyphicon-plus" style="font-size:30px"></i><br> Yeni Teslimat Adresi Ekle
+            </a>
+        </div>
+    </div>
+    <? if ($deliveryAddresses) { ?>
+        <? foreach ($deliveryAddresses as $deliveryAddress) { ?>
+            <div id="deliveryAddress<?= $deliveryAddress->delivery_address_id ?>" class="col-md-4 col-sm-6 col-xs-12">
+                <div class="address-item box">
+                    <div class="address-item-content">
+                        <?= $deliveryAddress->formatView() ?>
+                        <div class="address-buttons">
+                            <a class="btn btn-xs btn-warning" onclick="manageDeliveryAddress('<?= $deliveryAddress->delivery_address_id ?>')">
+                                <span class="glyphicon glyphicon-pencil"></span> Düzenle</a>
+                            <a class="btn btn-xs btn-danger" onclick="removeDeliveryAddress('<?= $deliveryAddress->delivery_address_id ?>')">
+                                <span class="glyphicon glyphicon-remove"></span> Sil</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <? } ?>
+    <? } ?>
+</div>
+<script type="text/javascript">
+    function manageDeliveryAddress(addressId) {
+        $.get("/account/manageDeliveryAddress/" + addressId + "/?ajax=1", function (data) {
+            if (typeof data == "string")
+                data = $.parseJSON(data);
+            $('body').append(data.Content);
+            $('#addressModal').modal('toggle');
+        });
+    }
+    function removeDeliveryAddress(addressId) {
+        if (confirm('Bu adresi silmek istediğinizden emin misiniz ?')) {
+            $.get("/account/deleteDeliveryAddress/" + addressId + "/?ajax=1", function (data) {
+                if (data == "OK") {
+                    $("#deliveryAddress" + addressId).hide();
+                } else {
+                    alert(data);
+                }
+            });
+        }
+    }
+</script>

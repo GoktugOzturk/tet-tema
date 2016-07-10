@@ -1,0 +1,53 @@
+<?php
+/**
+ * @var bool   $hasActiveFilters
+ * @var string $clearActiveFiltersLink
+ * @var array  $activeFilters
+ * @var array  $parentCategories
+ * @var array  $subCategories
+ * @var array  $filterGroups
+ */
+?>
+<div class="sideFilter">
+    <? if ($hasActiveFilters) { ?>
+        <div class="filterBlock selectedBlock">
+            <h3>Seçiminiz</h3>
+            <span class="clearFilter"><a href="<?= $clearActiveFiltersLink ?>">Temizle</a></span>
+            <ul class="scrollbar">
+                <? foreach ($activeFilters as $activeFilter) { ?>
+                    <li><a class="active" href="<?= $activeFilter['clearLink'] ?>"><?= $activeFilter['title'] ?></a></li>
+                <? } ?>
+            </ul>
+        </div>
+    <? } ?>
+    <div class="filterBlock categoryBlock">
+        <h3>Kategoriler</h3>
+        <? if (count($parentCategories)) { ?>
+            <ul>
+                <? foreach ($parentCategories as $category) { ?>
+                    <li class="grid<?= $category['depth'] ?>"><a <?= ($category['active'] ? 'class="active"' : '') ?> href="<?= $category['link'] ?>"><?= $category['title'] ?></a>
+                    </li>
+                <? } ?>
+            </ul>
+        <? } ?>
+        <? if (count($subCategories)) { ?>
+            <ul>
+                <? foreach ($subCategories as $category) { ?>
+                    <li class="grid<?= $category['depth'] ?>"><a href="<?= $category['link'] ?>"><?= $category['title'] ?> (<?= $category['resultCount'] ?>)</a></li>
+                <? } ?>
+            </ul>
+        <? } ?>
+    </div>
+    <? if (count($filterGroups)) { ?>
+        <? foreach ($filterGroups as $filterGroup) { ?>
+            <div class="filterBlock">
+                <h3><?= $filterGroup['title'] ?></h3>
+                <ul class="scrollbar">
+                    <? foreach ($filterGroup['items'] as $item) { ?>
+                        <li><a href="<?= $item['link'] ?>"><?= $item['title'] ?> (<?= $item['resultCount'] ?>)</a></li>
+                    <? } ?>
+                </ul>
+            </div>
+        <? } ?>
+    <? } ?>
+</div>

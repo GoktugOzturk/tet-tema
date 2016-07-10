@@ -1,0 +1,203 @@
+<?
+/**
+ * @var ob_order $order
+ * @var ob_order_package[] $orderPackages
+ * @var order_products_model[] $unPackagedProducts
+ * @var order_delivery_address_model $deliveryAddress
+ * @var order_invoice_info_model $invoiceAddress
+ */
+?>
+<div class="clearfix">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Sipariş Numarası</th>
+            <th>Sipariş Tarihi</th>
+            <th class="text-right">Sipariş Tutarı</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="orderDetailGeneral"><?= $order->order_code ?></td>
+            <td class="orderDetailGeneral"><?= icms::format_datetime($order->order_time) ?></td>
+            <td class="orderDetailGeneral text-right"><?= icms::format_money($order->sale_total) ?></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<? if ($orderPackages) {
+    $i = 0;
+    foreach ($orderPackages as $package) {
+        $i++;
+        $shipments = $package->shipments();
+        ?>
+        <div class="well">
+            <div class="clearfix oneOrderView">
+                <h2>
+                    <?= $i ?>. GÖNDERİNİZ - <?= $package->package_code ?>
+                    <div class="fr prLabelArea ">
+                        <span class="text-right prLabel"><?= $order->order_status == ob_order::ORDER_STATUS_REVIEW ? "Onay Bekliyor" : order::show_status($package->package_status,
+                                0, 0, true, true, true) ?></span>
+                    </div>
+                </h2>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <? if (!count($shipments)) { ?>
+                            <div clasS="row r">
+                                <div class="col-xs-12">
+                                    Tahmini Gönderim Tarihi: <?= icms::format_date($package->estimated_shipping_date) ?>
+                                </div>
+                            </div>
+                        <? } ?>
+                        <table class="table table-striped oneOrder">
+                            <thead>
+                            <tr>
+                                <th class="col-xs-1">Resim</th>
+                                <th class="col-xs-8">Ürün</th>
+                                <th class="col-xs-1 c">Adet</th>
+                                <th class="col-xs-2 r">Tutar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?
+                            $totalSale = 0;
+                            foreach ($package->orderProducts(true) as $orderProduct) {
+                                $product = $orderProduct->product();
+                                $totalSale += $orderProduct->order_sale * $orderProduct->quantity;
+                                ?>
+                                <tr>
+                                    <td class="img">
+                                        <img src="<?= $product->getPhoto() ?>" height="40"/>
+                                    </td>
+                                    <td class="link">
+                                        <a href="<?= link::toProduct($product) ?>" target="_blank">
+                                            <?= $product->full_name ?>
+                                        </a>
+                                    </td>
+                                    <td class="number c"><?= $orderProduct->quantity ?></td>
+                                    <td class="price text-right"><?= icms::format_money($orderProduct->order_sale * $orderProduct->quantity) ?></td>
+                                </tr>
+                            <? } ?>
+                            <? if ($package->sale_shipping > 0) {
+                                $totalSale += $package->sale_shipping;
+                                ?>
+                                <tr>
+                                    <td colspan="3" class="r b col-xs-10">Kargo Ücreti:</td>
+                                    <td class="r b col-xs-2"><?= icms::format_money($package->sale_shipping) ?></td>
+                                </tr>
+                            <? } ?>
+                            <tr>
+                                <td colspan="3" class="r b col-xs-10">Gönderi Toplamı:</td>
+                                <td class="r b col-xs-2"><?= icms::format_money($totalSale) ?></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <? if (count($shipments)) { ?>
+                            <table class="table table-striped margin0-0">
+                                <thead>
+                                <tr>
+                                    <th>Firma</th>
+                                    <th>Takip Kodu</th>
+                                    <th>Gönderim Zamanı</th>
+                                    <th>Kargo Durumu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <? foreach ($shipments as $shipment) { ?>
+                                    <tr>
+                                        <td><?= $shipment->deliveryOption()->delivery_option_name ?></td>
+                                        <td><?= $shipment->tracking_code ?></td>
+                                        <td><?= icms::format_datetime($shipment->shipment_time) ?></td>
+                                        <td><?= $shipment->shipmentStatusText() ?></td>
+                                    </tr>
+                                <? } ?>
+                                </tbody>
+                            </table>
+                        <? } ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <? } ?>
+<? } ?>
+
+<? if ($unPackagedProducts) { ?>
+    <div class="well">
+        <div class="clearfix oneOrderView">
+            <h2>BEKLEYEN ÜRÜNLER</h2>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-hover oneOrder">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Ürün</th>
+                            <th class="text-right">Adet</th>
+                            <th class="text-right">Tutar</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?
+                        $totalSale = 0;
+                        foreach ($unPackagedProducts as $orderProduct) {
+                            $product = $orderProduct->product();
+                            $totalSale += $orderProduct->order_sale * $orderProduct->quantity;
+                            ?>
+                            <tr>
+                                <td class="img">
+                                    <img src="<?= $product->getPhoto() ?>" height="40"/>
+                                </td>
+                                <td class="link">
+                                    <a href="<?= link::toProduct($product) ?>" target="_blank">
+                                        <?= $product->full_name ?>
+                                    </a>
+                                </td>
+                                <td class="number text-right"><?= $orderProduct->quantity ?></td>
+                                <td class="price text-right"><?= icms::format_money($orderProduct->order_sale * $orderProduct->quantity) ?></td>
+                            </tr>
+                        <? } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<? } ?>
+<div class="mt clearfix">
+    <h2>ADRES BİLGİLERİ</h2>
+    <table class="mt table table-striped addressArea">
+        <thead>
+        <tr>
+            <th>Teslimat Adresi</th>
+            <th>Fatura Bilgileri</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="address">
+                <? if ($deliveryAddress) { ?>
+                    <strong><?= $deliveryAddress->recipient_name ?></strong><br/>
+                    <?= $deliveryAddress->address_text ?> <?= $deliveryAddress->district()->district_name ?> / <?= $deliveryAddress->town()->town_name ?> / <?= $deliveryAddress->city()->city_name ?>
+                    <br/> Telefon: <?= $deliveryAddress->phone_number ?>
+                <? } else { ?>
+                    Adres bilgilerinde hata var lütfen müşteri hizmetlerine ulaşarak bilgileri güncelletiniz.
+                <? } ?>
+            </td>
+            <td class="address">
+                <? if ($invoiceAddress) { ?>
+                    <strong><?= $invoiceAddress->tax_payer ?></strong><br/>
+                    <?= $invoiceAddress->address_text ?> <?= $invoiceAddress->district()->district_name ?> / <?= $invoiceAddress->town()->town_name ?> / <?= $invoiceAddress->city()->city_name ?>
+                    <br/> Telefon: <?= $invoiceAddress->phone_number ?>
+                    <? if ($invoiceAddress->address_type == order_invoice_info_model::ADDRESS_TYPE_COMPANY) { ?>
+                        <br/> <?= $invoiceAddress->tax_department ?> V.D., No: <?= $invoiceAddress->tax_no ?>
+                    <? } else { ?>
+                        | T.C. No: <?= $invoiceAddress->tc_identification_no ?>
+                    <? } ?>
+                <? } else { ?>
+                    Fatura bilgilerinde hata var lütfen müşteri hizmetlerine ulaşarak bilgileri güncelletiniz.
+                <? } ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,54 @@
+<?
+/**
+ * @var ob_product[] $obProducts
+ */
+$itemShipped = array();
+foreach ($obProducts as $obProduct) {
+    $itemShipped[] = '{
+    "@type": "Product",
+    "name": "' . $obProduct->full_name . '",
+    "url": "' . $obProduct->getUrl() . '",
+    "image": "' . $obProduct->getPhoto() . '",
+    "sku": "' . $obProduct->sku_code . '",
+    "description": "",
+    "brand": {
+      "@type": "Brand",
+      "name": "' . $obProduct->brand_name . '"
+    }
+  }';
+}
+?>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ParcelDelivery",
+  "deliveryAddress": {
+    "@type": "PostalAddress",
+    "name": "{DELIVERY_ADDRESS_OWNER}",
+    "streetAddress": "{DELIVERY_ADDRESS_TEXT}",
+    "addressLocality": "{DELIVERY_ADDRESS_LOCAL}",
+    "addressRegion": "{DELIVERY_ADDRESS_CITY}",
+    "addressCountry": "TR",
+    "postalCode": "{DELIVERY_ADDRESS_POSTCODE}"
+  },
+  "expectedArrivalUntil": "<?= date('c', strtotime('+2 days')) ?>",
+  "carrier": {
+    "@type": "Organization",
+    "name": "{DELIVERY_OPTION_NAME}",
+    "url": "{DELIVERY_OPTION_WEBSITE}"
+  },
+  "itemShipped": [<?= implode(',', $itemShipped) ?>],
+  "trackingNumber": "{TRACKING_NUMBER}",
+  "trackingUrl": "{TRACKING_URL}",
+  "hasDeliveryMethod": "https://schema.org/ParcelService",
+  "partOfOrder": {
+    "@type": "Order",
+    "orderNumber": "{ORDER_CODE}",
+    "merchant": {
+      "@type": "Organization",
+      "name": "{SITE_NAME}"
+    },
+    "orderStatus": "https://schema.org/OrderInTransit"
+  }
+}
+</script>

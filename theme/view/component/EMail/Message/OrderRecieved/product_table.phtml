@@ -1,0 +1,79 @@
+<?
+/**
+ * @var float $sumProducts
+ * @var float $shippingCost
+ * @var float $sumTotal
+ */
+?>
+<table cellspacing="1" cellpadding="3" style="width: 100%; border: 0; background: #B9D0D7; font-size: 12px; color: #333333; line-height: 16px; border-collapse: separate">
+    <tr style="background: #D3E3E7;">
+        <td><strong>Ürün Adı</strong></td>
+        <td style="text-align: right"><strong>Fiyatı</strong></td>
+        <td style="text-align: center"><strong>Adet</strong></td>
+        <td style="text-align: right"><strong>Toplam</strong></td>
+    </tr>
+    <? foreach ($products as $product) { ?>
+        <tr style="background:#FFFFFF;">
+            <td><?= $product['name'] ?></td>
+            <td style="text-align:right; white-space:nowrap;"><?= icms::format_money($product['order_sale']) ?></td>
+            <td style="text-align:center"><?= $product['quantity'] ?></td>
+            <td style="text-align:right; white-space:nowrap; font-weight:bold"><?= icms::format_money($product['total_cost']) ?></td>
+        </tr>
+    <? } ?>
+    <tr style="background: #D3E3E7;">
+        <td colspan="3" style="text-align: right">Ürünler:</td>
+        <td style="text-align: right"><strong><?= icms::format_money($sumProducts) ?></strong></td>
+    </tr>
+    <tr style="background: #FFFFFF;">
+        <td colspan="3" style="text-align: right">Kargo:</td>
+        <td style="text-align: right"><?= icms::format_money($shippingCost) ?></td>
+    </tr>
+    <tr style="background: #D3E3E7;">
+        <td colspan="3" style="text-align: right"><strong>Genel Toplam:</strong></td>
+        <td style="text-align: right"><strong><?= icms::format_money($sumTotal) ?></strong></td>
+    </tr>
+</table>
+<?
+$acceptedOffer = array();
+foreach ($products as $product) {
+    $acceptedOffer[] = '{
+    "@type": "Offer",
+    "itemOffered": {
+      "@type": "Product",
+      "name": "' . $product['name'] . '",
+      "sku": "' . $product['sku'] . '",
+      "image": "' . $product['image'] . '",
+      "url": "' . $product['url'] . '"
+    },
+    "price": "' . $product['order_sale'] . '",
+    "priceCurrency": "TRY",
+    "eligibleQuantity": {
+      "@type": "QuantitativeValue",
+      "value": "' . $product['quantity'] . '"
+    }
+  }';
+}
+?>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Order",
+  "merchant": {
+    "@type": "Organization",
+    "name": "{SITE_NAME}"
+  },
+  "orderNumber": "{ORDER_CODE}",
+  "priceCurrency": "TRY",
+  "price": "{SUM_TOTAL}",
+  "acceptedOffer": [<?= implode(",", $acceptedOffer) ?>],
+  "orderStatus": "http://schema.org/OrderProcessing",
+  "url": "{CALL_TO_ACTION}",
+  "priceSpecification": [
+    {
+      "@type": "DeliveryChargeSpecification",
+      "price": "{SHIPPING_COST}",
+      "priceCurrency": "TRY"
+    }
+  ]
+}
+</script>
