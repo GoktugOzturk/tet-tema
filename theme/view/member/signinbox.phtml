@@ -12,17 +12,16 @@
                 <h4 class="modal-title" id="signinLabel">Giriş Yap</h4>
             </div>
             <div class="modal-body">
-                <div class="socialLogin">
-                    <p class="text-center">Sosyal medya hesabınızı kullanarak giriş yapabilirsiniz.</p>
-                    <div class="text-center">
-                        <button type="submit" onclick="window.location='/member/oauth/facebook/?b64=<?= $b64 ?>'" class="btn btn-default buttonFacebook">Facebook ile Bağlan
-                        </button>
-                        &nbsp;
-                        <button type="submit" onclick="window.location='/member/oauth/google/?b64=<?= $b64 ?>'" class="btn btn-default buttonGooglePlus">Google+ ile Bağlan
-                        </button>
+                <? $loginServices = view::getLoginServices($redirectTo, ' ile Bağlan'); ?>
+                <? if (count($loginServices)) { ?>
+                    <div class="socialLogin">
+                        <p class="text-center">Sosyal medya hesabınızı kullanarak giriş yapabilirsiniz.</p>
+                        <div class="text-center">
+                            <?= implode('', $loginServices) ?>
+                        </div>
                     </div>
-                </div>
-                <div class="text-center"><img src="<?=$themeDir?>/img/login-seperator.png" width="320"></div>
+                <? } ?>
+                <div class="seperator">ya da</div>
                 <p class="text-center">E-Postanızı ve Parolanızı girerek giriş yapabilirsiniz.</p>
                 <form method="post" action="<?= app::getUrl(ACTIVE_APP, "https") ?>/ajax/signin" role="form" id="loginForm" class="form-horizontal">
                     <input type="hidden" value="<?= $b64 ?>" name="redirectTo">

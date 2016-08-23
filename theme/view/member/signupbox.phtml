@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var string $redirectTo
+ */
+?>
 <div class="modal fade" id="sign-up" tabindex="-1" role="dialog" aria-labelledby="signupLabel" aria-hidden="true">
     <div class="modal-dialog" style="width: 830px;">
         <div class="modal-content">
@@ -6,19 +11,16 @@
                 <h4 class="modal-title" id="signupLabel">Sitemize Üye Olun</h4>
             </div>
             <div class="modal-body">
-                <div class="socialLogin">
-                    <p class="text-center">Sosyal medya hesabınızı kullanarak zahmetsizce sitemize üye olabilirsiniz.</p>
-                    <div class="text-center">
-                        <button type="submit" onclick="window.location='/member/oauth/facebook/?b64=<?= base64_encode($redirectTo) ?>'" class="btn btn-default buttonFacebook">
-                            Facebook ile Bağlan
-                        </button>
-                        &nbsp;
-                        <button type="submit" onclick="window.location='/member/oauth/google/?b64=<?= base64_encode($redirectTo) ?>'" class="btn btn-default buttonGooglePlus">
-                            Google+ ile Bağlan
-                        </button>
+                <? $loginServices = view::getLoginServices($redirectTo, ' ile Bağlan'); ?>
+                <? if (count($loginServices)) { ?>
+                    <div class="socialLogin">
+                        <p class="text-center">Sosyal medya hesabınızı kullanarak zahmetsizce sitemize üye olabilirsiniz.</p>
+                        <div class="text-center">
+                            <?= implode('', $loginServices) ?>
+                        </div>
                     </div>
-                </div>
-                <div class="text-center"><img src="<?=$themeDir?>/img/login-seperator.png" width="320"></div>
+                <? } ?>
+                <div class="seperator">ya da</div>
                 <p class="text-center">Sadece aşağıdaki bilgilerini vererek sitemizden alışveriş yapmaya başlayabilirsiniz.</p>
                 <form method="post" action="<?= app::getUrl(ACTIVE_APP, "https") ?>/ajax/signup" role="form" id="registerForm" class="form-horizontal" novalidate="novalidate">
                     <input type="hidden" value="<?= $redirectTo ?>" name="redirectTo">

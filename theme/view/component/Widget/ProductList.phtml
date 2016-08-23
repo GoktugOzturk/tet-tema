@@ -3,15 +3,16 @@
  * @var int           $id
  * @var string        $title
  * @var \ob_product[] $products
+ * @var ob_category   $category
  */
 ?>
-<div class="widget widgetProductList mb <?= $id ?>">
-    <h4><?= $title ?></h4>
+<div class="widgetProductList">
+    <h2><?= $title ?></h2>
     <table class="table table-striped">
         <tbody>
         <? foreach ($products as $key => $product) { ?>
             <tr>
-                <td width="70" class="productImage"><a href="<?= $product->getUrl() ?>"><?= $product->getPhotoImgTag("thumb", 0, false) ?></a></td>
+                <td width="70" class="productImage"><a href="<?= $product->getUrl() ?>"><?= $product->getPhotoImgTag("thumb", 0, true) ?></a></td>
                 <td class="productName"><a href="<?= $product->getUrl() ?>"><?= $product->full_name ?></a></td>
                 <td class="productPrice"><span class="price"><?= icms::format_money($product->getSalePrice()) ?></span>
                     <? if ($product->getBasePrice() > $product->getSalePrice()) { ?>

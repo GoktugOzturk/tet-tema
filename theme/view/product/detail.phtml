@@ -2,7 +2,7 @@
 /**
  * @var ob_product                           $obProduct
  * @var array                                $productPhotos
- * @var string                               $shareUrl
+ * @var string                               $mainProductUrl
  * @var string                               $FacebookAppID
  * @var string                               $TwitterAccount
  * @var \TeknoETicaret\Object\Product\Rating $rating
@@ -56,27 +56,27 @@
                     <? if (session::isStaff()) { ?>
                         <li>
                             <a title="Ürünü Düzenle" data-toggle="tooltip" data-placement="left" target="_blank" style="font-size:18px"
-                                href="<?= app::getUrl("oasis", "http") . "/product/summary/" . $obProduct->product_id ?>">
+                                href="<?= app::getUrl("oasis") . "/product/summary/" . $obProduct->product_id ?>">
                                 <i class="glyphicon glyphicon-edit"></i> </a>
                         </li>
                     <? } ?>
                     <? if (!empty($FacebookAppID)) { ?>
                         <li>
-                            <a href="<?= "https://www.facebook.com/dialog/share?app_id=" . $FacebookAppID . "&display=popup&href=" . urlencode($shareUrl) . "&redirect_uri="
-                            . urlencode($shareUrl) ?>" title="Facebook'da Paylaş" class="footer-social social-facebook"
-                                onclick="ga('send', 'social', 'Facebook', 'share', '<?= $shareUrl ?>');return !window.open(this.href, 'Facebook', 'width=640,height=300')"></a>
+                            <a href="<?= "https://www.facebook.com/dialog/share?app_id=" . $FacebookAppID . "&display=popup&href=" . urlencode($mainProductUrl) . "&redirect_uri="
+                            . urlencode($mainProductUrl) ?>" title="Facebook'da Paylaş" class="footer-social social-facebook"
+                                onclick="ga('send', 'social', 'Facebook', 'share', '<?= $mainProductUrl ?>');return !window.open(this.href, 'Facebook', 'width=640,height=300')"></a>
                         </li>
                     <? } ?>
                     <? if (!empty($TwitterAccount)) { ?>
                         <li>
-                            <a href="<?= "https://twitter.com/share?via=" . $TwitterAccount . "&url=" . urlencode($shareUrl) ?>" title="Twitter'da Paylaş"
-                                onclick="ga('send', 'social', 'Twitter', 'share', '<?= $shareUrl ?>');return !window.open(this.href, 'Twitter', 'width=640,height=300')"
+                            <a href="<?= "https://twitter.com/share?via=" . $TwitterAccount . "&url=" . urlencode($mainProductUrl) ?>" title="Twitter'da Paylaş"
+                                onclick="ga('send', 'social', 'Twitter', 'share', '<?= $mainProductUrl ?>');return !window.open(this.href, 'Twitter', 'width=640,height=300')"
                                 class="footer-social social-twitter"></a>
                         </li>
                     <? } ?>
                     <li>
-                        <a href="<?= "https://plus.google.com/share?url=" . urlencode($shareUrl) ?>" title="Google Plus'da Paylaş"
-                            onclick="ga('send', 'social', 'Google+', 'share', '<?= $shareUrl ?>');return !window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=660,width=510');"
+                        <a href="<?= "https://plus.google.com/share?url=" . urlencode($mainProductUrl) ?>" title="Google Plus'da Paylaş"
+                            onclick="ga('send', 'social', 'Google+', 'share', '<?= $mainProductUrl ?>');return !window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=660,width=510');"
                             class="footer-social social-google-plus"></a>
                     </li>
                     <? /*
@@ -106,17 +106,24 @@
                 </div>
                 <script>
                     $(function () {
-                        $("#activeImage").elevateZoom({
-                            gallery: 'thumbnailCarousel',
-                            galleryActiveClass: 'active',
-                            imageCrossfade: true,
-                            loadingIcon: '/assets/jquery-elevatezoom/ajax-loader.gif',
-                            zoomWindowFadeIn: 250,
-                            zoomWindowFadeOut: 250,
-                            lensFadeIn: 250,
-                            lensFadeOut: 250,
-                            zoomWindowWidth: 393,
-                            zoomWindowHeight: 475
+                        function initEZPlus() {
+                            $("#activeImage").ezPlus({
+                                gallery: 'thumbnailCarousel',
+                                galleryActiveClass: 'active',
+                                imageCrossfade: true,
+                                loadingIcon: '/assets/elevatezoom-plus/ajax-loader.gif',
+                                zoomWindowFadeIn: 250,
+                                zoomWindowFadeOut: 250,
+                                lensFadeIn: 250,
+                                lensFadeOut: 250,
+                                zoomWindowWidth: 393,
+                                zoomWindowHeight: 475
+                            });
+                        }
+
+                        initEZPlus();
+                        $(window).on("resize", function () {
+                            initEZPlus();
                         });
                     });
                 </script>
@@ -225,13 +232,11 @@
                                 });
                             </script>
                         </div>
-                    <? } else {
-                        if ($hasAvailableShoppingCheck) { ?>
-                            <div class="detailsArea clearfix text-center">
-                                <span class="campaignText">ALIŞVERİŞ ÇEKİNİZİ KULLANMAYI UNUTMAYIN</span>
-                            </div>
-                        <? }
-                    } ?>
+                    <? } elseif ($hasAvailableShoppingCheck) { ?>
+                        <div class="detailsArea clearfix text-center">
+                            <span class="campaignText">ALIŞVERİŞ ÇEKİNİZİ KULLANMAYI UNUTMAYIN</span>
+                        </div>
+                    <? } ?>
                     <div class="detailsAreaCart clearfix">
                         <div class="productQuantitySelector pull-left">
                             <span class="textquantity pull-left"><label for="productQuantity">Adet : </label></span>
@@ -241,15 +246,14 @@
                                 </button></span>
                                 <input name="quantity" id="productQuantity" class="form-control input-xs text-center" value="1" type="text" min="1"
                                     max="<?= $obProduct->saleableProductCount() ?>" onblur="quantity($(this))">
-                            <span class="input-group-btn"><button onclick="quantity('#productQuantity','up')" class="btn btn-default btn-xs" type="button"><i
-                                        class="glyphicon glyphicon-plus"></i>
+                                <span class="input-group-btn"><button onclick="quantity('#productQuantity','up')" class="btn btn-default btn-xs" type="button"><i
+                                            class="glyphicon glyphicon-plus"></i>
                                 </button></span>
                             </div>
                         </div>
                         <div class="pull-right">
                             <input type="hidden" id="productId" value="<?= $obProduct->product_id ?>"/>
                             <input type="hidden" id="fromSource" value="<?= (isset($_GET['from']) ? $_GET['from'] : '') ?>"/>
-                            <input type="hidden" id="productPrice" value="<?= round($obProduct->getSalePrice(), 2) ?>"/>
                             <div class="proAddToCart"
                                 onclick="addToCart($('#productId').val(), $('#productQuantity').val(), $('#fromSource').val());"></div>
                         </div>
@@ -519,5 +523,12 @@
             }
         });
     </script>
-    <?= implode("", $widgets) ?>
 </div>
+<?= \TeknoETicaret\Widget\Block::addBlock('productUnder',
+    array(
+        'productId' => $obProduct->product_id,
+        'categoryId' => $obProduct->category_id,
+        'brandId' => $obProduct->brand_id,
+    )
+)
+?>

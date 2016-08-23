@@ -1,17 +1,18 @@
 <?
 /**
- * @var array $list
+ * @var array $families
  * @var float $price
- * @var int $maxInstallmentCount
+ * @var int   $maxInstallment
  */
 ?>
 <div id="fullInstallmentTable" class="row mt">
-    <? foreach ($list as $cardGroup => $cardData) { ?>
+    <? foreach ($families as $cardFamilyData) { ?>
         <div class="col-xs-3">
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th class="CardFamily CardFamily-<?= $cardData['card_family_slug'] ?> text-center" colspan="3"></th>
+                    <th class="CardFamily CardFamily-<?= $cardFamilyData['card_family_slug'] ?>" colspan="3"><img src="<?= $cardFamilyData['card_family_logo'] ?>"
+                            alt="<?= $cardFamilyData['card_family_name'] ?>"/></th>
                 </tr>
                 <tr>
                     <th>Taksit</th>
@@ -20,23 +21,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Tek Çekim</td>
-                    <td class="r"><?= number_format($price, 2); ?></td>
-                    <td class="r b"><?= number_format($price, 2); ?></td>
-                </tr>
-                <? for ($option = 2; $option <= $maxInstallmentCount; $option++) { ?>
+                <? for ($option = 2; $option <= $maxInstallment; $option++) { ?>
                     <tr>
-                        <? if (isset($cardData['installments'][$option])) { ?>
-                            <td><?= $cardData['installments'][$option]['text'] ?></td>
-                            <td class="r"><?= number_format($cardData['installments'][$option]['installmentPrice'], 2) ?></td>
-                            <td class="r <?= number_format($cardData['installments'][$option]['installment_total'], 2) == number_format($price, 2) ? 'b' : '' ?>">
-                                <?= number_format($cardData['installments'][$option]['installment_total'], 2) ?>
+                        <? if (isset($cardFamilyData['installments'][$option])) { ?>
+                            <td><?= $cardFamilyData['installments'][$option]['text'] ?></td>
+                            <td class="text-right"><?= number_format($cardFamilyData['installments'][$option]['installmentPrice'], 2) ?></td>
+                            <td class="text-right <?= number_format($cardFamilyData['installments'][$option]['installment_total'], 2) == number_format($price, 2) ? 'b' : '' ?>">
+                                <?= number_format($cardFamilyData['installments'][$option]['installment_total'], 2) ?>
                             </td>
-                        <? } else { ?>
-                            <td> <?= $option ?> Taksit</td>
-                            <td class="r">-</td>
-                            <td class="r">-</td>
                         <? } ?>
                     </tr>
                 <? } ?>

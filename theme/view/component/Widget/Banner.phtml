@@ -1,11 +1,17 @@
 <?
 /**
  * @var \advertisement_model[] $banners
+ * @var string                 $order
  */
+if ($order == 'V') {
+    $col = 12;
+} else {
+    $col = 12 / count($banners);
+}
 ?>
-<div class="row mb">
+<div class="row">
     <? foreach ($banners as $key => $banner) { ?>
-        <div class="col-xs-6">
+        <div class="col-md-<?= $col ?>">
             <?= image::getBannerHtml($banner) ?>
         </div>
     <? } ?>

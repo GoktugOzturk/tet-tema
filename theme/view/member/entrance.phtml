@@ -4,19 +4,16 @@
  */
 ?>
 <div class="loginPage">
-    <div class="mb socialLogin">
-        <p class="mt text-center"><strong>Sosyal medya hesabınızı kullanarak <?= icms::site_com("a") ?> kolayca giriş yapabilirsiniz.</strong></p>
-        <div class="mt text-center">
-            <button type="submit" onclick="window.location='/member/oauth/facebook/?b64=<?= base64_encode($redirectTo) ?>'" class="btn btn-default buttonFacebook">Facebook ile
-                Bağlan
-            </button>
-            &nbsp;
-            <button type="submit" onclick="window.location='/member/oauth/google/?b64=<?= base64_encode($redirectTo) ?>'" class="btn btn-default buttonGooglePlus">Google+ ile
-                Bağlan
-            </button>
+    <? $loginServices = view::getLoginServices($redirectTo, ' ile Bağlan'); ?>
+    <? if (count($loginServices)) { ?>
+        <div class="mb socialLogin">
+            <p class="mt text-center"><strong>Sosyal medya hesabınızı kullanarak <?= icms::site_com("a") ?> kolayca giriş yapabilirsiniz.</strong></p>
+            <div class="mt text-center">
+                <?= implode('', $loginServices) ?>
+            </div>
+            <br>
         </div>
-        <br>
-    </div>
+    <? } ?>
     <div class="row">
         <div class="col-xs-4">
             <h2>Üye Girişi</h2>

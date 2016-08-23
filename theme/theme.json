@@ -52,10 +52,12 @@
     },
     "blockZones": {
       "footer": {
+        "page": "All",
         "title": "Footer Alanı",
         "description": "Bu alan tüm sayfaların altında bulunur"
       },
       "homePage": {
+        "page": "Home",
         "title": "Ana Sayfa",
         "description": "Bu alan tüm sayfaların altında bulunur"
       }

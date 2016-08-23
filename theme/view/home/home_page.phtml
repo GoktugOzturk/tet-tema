@@ -2,23 +2,13 @@
 /**
  * @var string $slider
  * @var string $banners
- * @var array $widgets
+ * @var array  $widgets
  */
 ?>
 <div class="home">
-    <? if (isset($slider)) { ?>
-        <div class="row mb">
-            <div class="col-xs-9 col-xs-offset-3">
-                <?= $slider ?>
-            </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= \TeknoETicaret\Widget\Block::addBlock('homePage') ?>
         </div>
-    <? } ?>
-    <!-- menü ve slider sonu -->
-    <? if (isset($banners)) { ?>
-        <?= $banners ?>
-    <? } ?>
-    <!-- 2 banner sonu -->
-    <? if (isset($widgets)) { ?>
-        <?= implode("", $widgets) ?>
-    <? } ?>
+    </div>
 </div>

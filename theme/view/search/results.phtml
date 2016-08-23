@@ -20,33 +20,22 @@
         <?= (isset($descriptionBlock) ? $descriptionBlock : '') ?>
     </aside>
     <article class="col-xs-9">
-        <? view::show_breadcrumbs() ?>
-        <? if (isset($qs)) { ?>
-            <h1>
-                <? if (isset($brand) && $brand && (isset($qs) && !empty($qs))) { ?>
-                    <?= $brand->brand_name ?>
-                <? } ?>
-                <?
-                if (isset($category->category_name)) {
-                    echo $category->category_name;
+        <?= view::show_breadcrumbs() ?>
+        <h1>
+            <? if (isset($qs)) {
+                if (!empty($qs)) {
+                    echo '"' . $qs . '" Arama Sonuçları';
+                } elseif (isset($isJustNew)) {
+                    echo 'En Yeni Ürünler';
                 } else {
-                    if (isset($qs) && !empty($qs)) {
-                        echo '"' . $qs . '" ' . ' Arama Sonuçları';
-                    } else {
-                        if (isset($isJustNew)) {
-                            echo 'En Yeni Ürünler';
-                        } else {
-                            echo 'Arama Sonuçları';
-                        }
-                    }
+                    echo 'Arama Sonuçları';
                 }
-                ?>
-            </h1>
-        <? } elseif (isset($category)) { ?>
-            <h1><?= $category->category_name ?> Kategorisindeki Ürünler</h1>
-        <? } elseif (isset($brand)) { ?>
-            <h1><?= $searchListTitle ?></h1>
-        <? } ?>
+            } elseif (isset($category)) {
+                echo $category->category_name;
+            } elseif (isset($brand)) {
+                echo $searchListTitle;
+            } ?>
+        </h1>
         <div class="catProList">
             <? if (!isset($hideListTitle) || !$hideListTitle) { ?>
                 <div class="catSort clearfix">

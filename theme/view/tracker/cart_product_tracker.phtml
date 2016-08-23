@@ -1,0 +1,32 @@
+<?
+/**
+ * @var array $productIds
+ * @var \TeknoETicaret\Shopping\Cart\Cart $cart
+ */
+?>
+<? if (\TeknoETicaret\Config\Settings::get('adwords.remarketing.enabled')) { ?>
+    <? /* BEGIN - Adwords Remarketing */ ?>
+    <script type="text/javascript">
+        var google_tag_params = {
+            ecomm_prodid: ["<?=implode('","', $productIds)?>"],
+            ecomm_pagetype: "cart",
+            ecomm_totalvalue: <?=$cart->getTotalPrice()?>
+        };
+    </script>
+    <script type="text/javascript">
+        /* <![CDATA[ */
+        var google_conversion_id = <?= \TeknoETicaret\Config\Settings::get('adwords.remarketing.conversionid') ?>;
+        var google_custom_params = window.google_tag_params;
+        var google_remarketing_only = true;
+        var google_conversion_format = 3;
+        /* ]]> */
+    </script>
+    <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js"></script>
+    <noscript>
+        <div style="display:inline;">
+            <img height="1" width="1" style="border-style:none;" alt=""
+                src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/<?= \TeknoETicaret\Config\Settings::get('adwords.remarketing.conversionid') ?>/?value=0&amp;guid=ON&amp;script=0"/>
+        </div>
+    </noscript>
+    <? /* END - Adwords Remarketing */ ?>
+<? } ?>
